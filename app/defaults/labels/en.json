@@ -1,0 +1,320 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "language": "en",
+  "language_name": "English",
+  "version": "1.0.0",
+
+  "buttons": {
+    "EXPORT_CSV": "Export CSV",
+    "EXPORT_ALL_VMS_CSV": "Export All VMs CSV",
+    "EXPORT_AUDIT": "Export Audit Logs",
+    "EXPORT_MY_VMS": "Export My VMs CSV",
+    "ADD_USER": "+ Add User",
+    "ENABLE_ADMIN": "Enable Admin",
+    "DISABLE_ADMIN": "Disable Admin",
+    "CHANGE_GROUP": "Change",
+    "PW_RESET": "PW Reset",
+    "OTP_RESET": "OTP Reset",
+    "ACTIVATE": "Activate",
+    "DEACTIVATE": "Deactivate",
+    "DELETE": "Delete",
+    "ADD_GROUP": "+ Add Group",
+    "ADD_MEMBER": "+ Member",
+    "EDIT": "Edit",
+    "REMOVE": "Remove",
+    "DELETE_GROUP": "Delete",
+    "RESTORE": "Restore",
+    "ADD_EXISTING_VM": "+ Add Existing VM",
+    "DOWNLOAD_KEY": "Download",
+    "ASSIGN_JOB": "Assign Job",
+    "DELETE_VM": "Delete",
+    "SAVE_POLICY": "Save Policy",
+    "SAVE_SLACK": "Save Slack Settings",
+    "SAVE_TEAMS": "Save Teams Settings",
+    "SAVE_EMAIL": "Save Email Settings",
+    "SAVE_WEBHOOK": "Save Webhook Settings",
+    "SAVE_MENU_CONFIG": "💾 Save Changes",
+    "CANCEL": "Cancel",
+    "CREATE": "Create",
+    "UPDATE": "Update",
+    "SAVE": "Save",
+    "CLOSE": "Close",
+    "SUBMIT": "Submit",
+    "VERIFY": "Verify",
+    "DOWNLOAD": "Download",
+    "UPLOAD": "Upload",
+    "ADD": "Add",
+    "ASSIGN": "Assign",
+    "RESET": "Reset",
+    "APPROVE": "Approve",
+    "REJECT": "Reject",
+    "REVIEW": "Review"
+  },
+
+  "table_headers": {
+    "EMAIL": "Email",
+    "STATUS": "Status",
+    "ADMIN": "Admin",
+    "OTP": "MFA",
+    "GROUPS": "Groups",
+    "CREATED": "Created",
+    "ACTIONS": "Manage",
+    "GROUP_NAME": "Group Name",
+    "MEMBERS": "Members",
+    "VMID": "VMID",
+    "HOSTNAME": "Hostname",
+    "IP_ADDRESS": "IP Address",
+    "GROUP": "Group",
+    "JOB_ID": "Job ID",
+    "VM_STATUS": "Status",
+    "SSH_KEY": "SSH Key",
+    "REQUEST_DATE": "Date",
+    "REQUEST_TYPE": "Type",
+    "VM_COUNT": "Count",
+    "SPEC": "Spec",
+    "PURPOSE": "Purpose",
+    "TIMESTAMP": "Time",
+    "USER": "User",
+    "ACTION": "Action",
+    "RESULT": "Result",
+    "DETAILS": "Details",
+    "IP": "IP",
+    "REQUESTER": "Requester",
+    "DATE": "Date",
+    "TYPE": "Type",
+    "COUNT": "Count"
+  },
+
+  "sections": {
+    "USER_MANAGEMENT": {
+      "title": "Users Management",
+      "description": "Manage user accounts and permissions"
+    },
+    "GROUP_MANAGEMENT": {
+      "title": "Groups Management",
+      "description": "Manage groups and memberships"
+    },
+    "DELETED_VM_MANAGEMENT": {
+      "title": "Deleted VMs Management",
+      "description": "Manage virtual machines"
+    },
+    "NOTIFICATION_SETTINGS": {
+      "title": "Notification Settings",
+      "description": "Configure notification channels (Slack, Teams, Email, Webhook)"
+    },
+    "PASSWORD_POLICY": {
+      "title": "Security Policy",
+      "description": "Key/password rotation permissions and auto-rotation schedule"
+    },
+    "AUDIT_LOGS": {
+      "title": "Audit Logs",
+      "description": "View system audit logs and user activities"
+    },
+    "MENU_SETTINGS": {
+      "title": "Menu Settings",
+      "description": "Configure dynamic menu system"
+    },
+    "MY_GROUPS": {
+      "title": "My Groups",
+      "description": "Groups you are a member of"
+    },
+    "JOBS_VMS": {
+      "title": "Jobs & VMs",
+      "description": "Virtual machines and deployment jobs"
+    },
+    "VM_REQUEST_HISTORY": {
+      "title": "VM Create History",
+      "description": "View VM creation request history"
+    }
+  },
+
+  "menus": {
+    "DASHBOARD": "Dashboard",
+    "ADMIN_PANEL": "Admin",
+    "LOGOUT": "Logout",
+    "CHANGE_PASSWORD": "PW Change",
+    "USER_MANAGEMENT": "Users",
+    "GROUP_MANAGEMENT": "Groups",
+    "DELETED_VM_MANAGEMENT": "Deleted VMs",
+    "NOTIFICATION_SETTINGS": "Notifications",
+    "PASSWORD_POLICY": "Security Policy",
+    "AUDIT_LOGS": "Audit Logs",
+    "MENU_SETTINGS": "Menu Settings",
+    "VM_MANAGEMENT": "VM Management",
+    "MY_PROFILE": "My Profile",
+    "SETTINGS": "Settings"
+  },
+
+  "form_labels": {
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "NEW_PASSWORD": "New Password",
+    "GROUP": "Group",
+    "ADMIN_PRIVILEGES": "Admin privileges",
+    "GROUP_NAME": "Group Name",
+    "SELECT_USER": "Select User",
+    "SELECT_GROUP": "Select Group",
+    "VMID": "VMID",
+    "HOSTNAME": "Hostname",
+    "IP_ADDRESS": "IP Address",
+    "NODE": "Node",
+    "PRIVATE_KEY": "Private Key (Required)",
+    "PUBLIC_KEY": "Public Key (Optional)",
+    "OTP_CODE": "OTP Code",
+    "SMTP_HOST": "SMTP Host",
+    "SMTP_PORT": "SMTP Port",
+    "SMTP_USER": "SMTP User",
+    "SMTP_PASSWORD": "SMTP Password",
+    "FROM_ADDRESS": "From Address",
+    "TO_ADDRESSES": "To Addresses (comma-separated)",
+    "WEBHOOK_URL": "Webhook URL",
+    "CUSTOM_HEADERS": "Custom Headers (JSON)",
+    "PASSWORD_EXPIRY": "Password Expiry (days)",
+    "WARNING_PERIOD": "Warning Period (days)",
+    "MIN_LENGTH": "Minimum Length",
+    "REQUIRE_UPPERCASE": "Require uppercase letters",
+    "REQUIRE_LOWERCASE": "Require lowercase letters",
+    "REQUIRE_NUMBERS": "Require numbers",
+    "REQUIRE_SPECIAL_CHARS": "Require special characters (!@#$%^&* etc.)",
+    "USER": "User"
+  },
+
+  "modal_titles": {
+    "ADD_USER": "Add User",
+    "RESET_PASSWORD": "Reset Password",
+    "CHANGE_GROUP": "Change Group",
+    "OTP_VERIFICATION": "OTP Verification",
+    "ADD_GROUP": "Create Group",
+    "EDIT_GROUP": "Edit Group Name",
+    "ADD_MEMBER": "Add Group Member",
+    "ASSIGN_JOB": "Assign Job to VM",
+    "ADD_EXISTING_VM": "Add Existing VM"
+  },
+
+  "modal_descriptions": {
+    "OTP_VERIFICATION": "Enter your OTP code to download the SSH key.",
+    "ADD_EXISTING_VM": "Register an existing VM that was created before Proxmox Horizon setup"
+  },
+
+  "placeholders": {
+    "EMAIL": "userid@company.com",
+    "PASSWORD": "8+ chars, uppercase, lowercase, numbers, special chars",
+    "OTP_CODE": "000000",
+    "GROUP_NAME": "e.g. dev-group",
+    "VMID": "e.g., 100",
+    "HOSTNAME": "e.g., web-server-01",
+    "IP_ADDRESS": "e.g., 192.168.0.1",
+    "NODE": "e.g., pve01",
+    "WEBHOOK_URL": "https://your-server.com/webhook",
+    "SMTP_HOST": "smtp.gmail.com",
+    "SMTP_PORT": "587",
+    "SMTP_USER": "your-email@gmail.com",
+    "SMTP_PASSWORD": "••••••••",
+    "FROM_ADDRESS": "notifications@company.com",
+    "TO_ADDRESSES": "admin1@company.com, admin2@company.com",
+    "CUSTOM_HEADERS": "{\"Authorization\": \"Bearer token\", \"X-Custom\": \"value\"}",
+    "SEARCH_VMS": "Search VMID, hostname, IP, Group..."
+  },
+
+  "messages": {
+    "LOADING": "Loading...",
+    "NO_DATA": "No data found.",
+    "NO_USERS": "No users found",
+    "NO_GROUPS": "No groups found",
+    "NO_VMS": "No VMs registered.",
+    "NO_AUDIT_LOGS": "No audit logs",
+    "TRASH_EMPTY": "Trash is empty",
+    "NO_GROUPS_ASSIGNED": "You are not assigned to any group. Please contact your administrator.",
+    "VM_CREATION_NOTE": "VMs will be automatically reflected after running create_vms.sh in Proxmox.",
+    "SUCCESS_USER_CREATED": "User created",
+    "SUCCESS_USER_DEACTIVATED": "User deactivated",
+    "SUCCESS_USER_ACTIVATED": "User activated",
+    "SUCCESS_USER_DELETED": "User deleted",
+    "SUCCESS_PASSWORD_RESET": "Password reset successfully",
+    "SUCCESS_OTP_RESET": "OTP reset successfully",
+    "SUCCESS_GROUP_CHANGED": "Group changed successfully",
+    "SUCCESS_GROUP_CREATED": "Group created",
+    "SUCCESS_GROUP_DELETED": "Group deleted",
+    "SUCCESS_GROUP_UPDATED": "Group name updated successfully",
+    "SUCCESS_MEMBER_ADDED": "Member added successfully",
+    "SUCCESS_MEMBER_REMOVED": "Member removed",
+    "SUCCESS_VM_RESTORED": "VM restored",
+    "SUCCESS_VM_DELETED": "VM deleted",
+    "SUCCESS_VM_ADDED": "VM added successfully with uploaded SSH key!",
+    "SUCCESS_SETTINGS_SAVED": "Settings saved successfully",
+    "SUCCESS_MENU_SAVED": "Menu settings saved. Please refresh the page.",
+    "ERROR_REQUIRED_FIELDS": "Required fields are missing",
+    "ERROR_INVALID_OTP": "OTP code does not match",
+    "ERROR_CHALLENGE_EXPIRED": "Challenge expired (60 seconds)",
+    "ERROR_GROUP_HAS_MEMBERS": "Cannot delete group with members",
+    "ERROR_GROUP_HAS_VMS": "Cannot delete group with VMs",
+    "ERROR_GROUP_HAS_JOBS": "Cannot delete group with jobs",
+    "ERROR_GROUP_NAME_EXISTS": "A group with this name already exists",
+    "ERROR_CANNOT_CHANGE_OWN_ADMIN": "You cannot change your own admin status",
+    "ERROR_INVALID_JSON": "Invalid JSON format",
+    "ERROR_NETWORK": "Network error occurred"
+  },
+
+  "confirmations": {
+    "DEACTIVATE_USER": "Deactivate user?\n\nThis will prevent the user from logging in.",
+    "ACTIVATE_USER": "Activate user?\n\nThis will allow the user to log in again.",
+    "DELETE_USER": "Permanently delete user?\n\nThis action cannot be undone!",
+    "RESET_OTP": "Reset OTP for this user?\n\nThey will need to re-register OTP on next login.",
+    "ENABLE_ADMIN": "Are you sure you want to change admin privileges?",
+    "DELETE_GROUP": "⚠️ Delete group?\n\nThis action cannot be undone.",
+    "REMOVE_MEMBER": "Remove this member from the group?",
+    "RESTORE_VM": "Restore VM?",
+    "DELETE_VM": "Are you sure you want to delete this VM?\n\nThis will perform a soft delete. You can restore it from the Admin panel.",
+    "DELETE_VM_PERMANENT": "⚠️ PERMANENTLY DELETE VM?\n\nThis action CANNOT be undone!\nThe VM will be removed from the database forever."
+  },
+
+  "badges": {
+    "ACTIVE": "Active",
+    "INACTIVE": "Inactive",
+    "ADMIN": "Admin",
+    "MEMBER": "Member",
+    "ENABLED": "Enabled",
+    "OFF": "Off",
+    "SUCCESS": "OK",
+    "FAIL": "FAIL",
+    "DELETED": "Deleted"
+  },
+
+  "notifications": {
+    "SLACK_TITLE": "Slack Notifications",
+    "TEAMS_TITLE": "Microsoft Teams Notifications",
+    "EMAIL_TITLE": "Email Notifications",
+    "WEBHOOK_TITLE": "Custom Webhook",
+    "ENABLE_NOTIFICATIONS": "Enable Notifications",
+    "WEBHOOK_URL_LABEL": "Webhook URL",
+    "WEBHOOK_URL_HELP": "Enter your Slack Incoming Webhook URL",
+    "TEAMS_WEBHOOK_HELP": "Enter your Teams Incoming Webhook URL",
+    "WEBHOOK_HEADERS_HELP": "Optional: Custom HTTP headers as JSON object",
+    "EMAIL_TO_HELP": "Separate multiple addresses with commas",
+    "PASSWORD_EXPIRY_HELP": "Set to 0 to disable expiry",
+    "WARNING_DAYS_HELP": "Days before expiry to show warning"
+  },
+
+  "menu_settings": {
+    "INFO_TITLE": "ℹ️ Info:",
+    "INFO_DESCRIPTION": "You can edit the JSON below to change menus and section titles. Changes will take effect after saving and refreshing the page.",
+    "MENU_CONFIG_TITLE": "📋 Menu Configuration",
+    "SECTION_LABELS_TITLE": "🏷️ Section Labels"
+  },
+
+  "ssh_key": {
+    "UPLOAD_TITLE": "SSH Key Upload",
+    "UPLOAD_DESCRIPTION": "Upload the existing SSH key pair from your VM. The private key is required.",
+    "PRIVATE_KEY_REQUIRED": "Private Key (Required)",
+    "PUBLIC_KEY_OPTIONAL": "Public Key (Optional)",
+    "PUBLIC_KEY_HELP": "If not provided, will be derived from private key",
+    "CLICK_TO_VIEW": "📋 Click to view",
+    "CLICK_TO_HIDE": "📋 Click to hide"
+  },
+
+  "password_generation": {
+    "AUTO_GENERATE": "Auto Generate",
+    "GENERATING": "Generating...",
+    "ERROR": "Error generating password."
+  }
+}

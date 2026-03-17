@@ -1,0 +1,881 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "1.0.0",
+  "description": "UUID-based UI element definitions. Display text is stored in labels/*.json files.",
+
+  "buttons": {
+    "user_management": [
+      {
+        "uuid": "btn-550e8400-e29b-41d4-a716-446655440001",
+        "button_key": "EXPORT_CSV",
+        "action": "exportUsers",
+        "css_class": "btn",
+        "style": "background:#10b981;color:white;",
+        "sort_order": 1,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-550e8400-e29b-41d4-a716-446655440002",
+        "button_key": "ADD_USER",
+        "action": "openAddUserModal",
+        "css_class": "btn btn-primary",
+        "sort_order": 2,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-550e8400-e29b-41d4-a716-446655440003",
+        "button_key": "ENABLE_ADMIN",
+        "action": "enableAdmin",
+        "css_class": "btn btn-primary btn-sm",
+        "sort_order": 3,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-550e8400-e29b-41d4-a716-446655440010",
+        "button_key": "DISABLE_ADMIN",
+        "action": "disableAdmin",
+        "css_class": "btn btn-warning btn-sm",
+        "sort_order": 3,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-550e8400-e29b-41d4-a716-446655440004",
+        "button_key": "CHANGE_GROUP",
+        "action": "openChangeGroupModal",
+        "css_class": "btn btn-primary btn-sm",
+        "sort_order": 4,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-550e8400-e29b-41d4-a716-446655440005",
+        "button_key": "PW_RESET",
+        "action": "openResetPwModal",
+        "css_class": "btn btn-warning btn-sm",
+        "sort_order": 5,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-550e8400-e29b-41d4-a716-446655440006",
+        "button_key": "OTP_RESET",
+        "action": "resetOtp",
+        "css_class": "btn btn-warning btn-sm",
+        "sort_order": 6,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-550e8400-e29b-41d4-a716-446655440007",
+        "button_key": "ACTIVATE",
+        "action": "activateUser",
+        "css_class": "btn btn-primary btn-sm",
+        "sort_order": 7,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-550e8400-e29b-41d4-a716-446655440008",
+        "button_key": "DEACTIVATE",
+        "action": "deactivateUser",
+        "css_class": "btn btn-warning btn-sm",
+        "sort_order": 8,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-550e8400-e29b-41d4-a716-446655440009",
+        "button_key": "DELETE",
+        "action": "deleteUser",
+        "css_class": "btn btn-danger btn-sm",
+        "sort_order": 9,
+        "is_visible": true
+      }
+    ],
+    "group_management": [
+      {
+        "uuid": "btn-a1b2c3d4-e5f6-41d4-a716-446655440001",
+        "button_key": "EXPORT_CSV",
+        "action": "exportGroups",
+        "css_class": "btn",
+        "style": "background:#10b981;color:white;",
+        "sort_order": 1,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-a1b2c3d4-e5f6-41d4-a716-446655440002",
+        "button_key": "ADD_GROUP",
+        "action": "openAddGroupModal",
+        "css_class": "btn btn-primary",
+        "sort_order": 2,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-a1b2c3d4-e5f6-41d4-a716-446655440003",
+        "button_key": "ADD_MEMBER",
+        "action": "openAddMemberModal",
+        "css_class": "btn btn-primary btn-sm",
+        "sort_order": 3,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-a1b2c3d4-e5f6-41d4-a716-446655440004",
+        "button_key": "EDIT",
+        "action": "openEditGroupModal",
+        "css_class": "btn btn-warning btn-sm",
+        "sort_order": 4,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-a1b2c3d4-e5f6-41d4-a716-446655440005",
+        "button_key": "REMOVE",
+        "action": "removeMember",
+        "css_class": "btn btn-danger btn-sm",
+        "sort_order": 5,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-a1b2c3d4-e5f6-41d4-a716-446655440006",
+        "button_key": "DELETE_GROUP",
+        "action": "deleteGroup",
+        "css_class": "btn btn-danger btn-sm",
+        "sort_order": 6,
+        "is_visible": true
+      }
+    ],
+    "vm_management": [
+      {
+        "uuid": "btn-b2c3d4e5-f6a7-41d4-a716-446655440001",
+        "button_key": "EXPORT_ALL_VMS_CSV",
+        "action": "exportVMs",
+        "css_class": "btn",
+        "style": "background:#10b981;color:white;",
+        "sort_order": 1,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-b2c3d4e5-f6a7-41d4-a716-446655440002",
+        "button_key": "RESTORE",
+        "action": "restoreVm",
+        "css_class": "btn btn-primary btn-sm",
+        "sort_order": 2,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-b2c3d4e5-f6a7-41d4-a716-446655440003",
+        "button_key": "DELETE",
+        "action": "deleteVmPermanently",
+        "css_class": "btn btn-danger btn-sm",
+        "sort_order": 3,
+        "is_visible": true
+      }
+    ],
+    "audit_logs": [
+      {
+        "uuid": "btn-c3d4e5f6-a7b8-41d4-a716-446655440001",
+        "button_key": "EXPORT_AUDIT",
+        "action": "exportAuditLogs",
+        "css_class": "btn",
+        "style": "background:#10b981;color:white;",
+        "sort_order": 1,
+        "is_visible": true
+      }
+    ],
+    "dashboard": [
+      {
+        "uuid": "btn-d4e5f6a7-b8c9-41d4-a716-446655440001",
+        "button_key": "EXPORT_MY_VMS",
+        "action": "exportMyVMs",
+        "css_class": "btn",
+        "style": "background:#10b981;color:white;",
+        "sort_order": 1,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-d4e5f6a7-b8c9-41d4-a716-446655440002",
+        "button_key": "ADD_EXISTING_VM",
+        "action": "openAddVmModal",
+        "css_class": "btn",
+        "style": "background:#3b82f6;color:white;",
+        "sort_order": 2,
+        "is_visible": true,
+        "permission_level": "ADMIN_ONLY"
+      },
+      {
+        "uuid": "btn-d4e5f6a7-b8c9-41d4-a716-446655440003",
+        "button_key": "DOWNLOAD_KEY",
+        "action": "openDownloadModal",
+        "css_class": "btn btn-download",
+        "sort_order": 3,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-d4e5f6a7-b8c9-41d4-a716-446655440004",
+        "button_key": "ASSIGN_JOB",
+        "action": "openAssignJobModal",
+        "css_class": "btn btn-sm",
+        "style": "background:#3b82f6;color:white;",
+        "sort_order": 4,
+        "is_visible": true,
+        "permission_level": "ADMIN_ONLY"
+      },
+      {
+        "uuid": "btn-d4e5f6a7-b8c9-41d4-a716-446655440005",
+        "button_key": "DELETE_VM",
+        "action": "deleteVm",
+        "css_class": "btn btn-sm",
+        "style": "background:#dc2626;color:white;",
+        "sort_order": 5,
+        "is_visible": true,
+        "permission_level": "ADMIN_ONLY"
+      }
+    ],
+    "password_policy": [
+      {
+        "uuid": "btn-e5f6a7b8-c9d0-41d4-a716-446655440001",
+        "button_key": "SAVE_POLICY",
+        "action": "savePolicyForm",
+        "css_class": "btn btn-primary",
+        "sort_order": 1,
+        "is_visible": true
+      }
+    ],
+    "notifications": [
+      {
+        "uuid": "btn-f6a7b8c9-d0e1-41d4-a716-446655440001",
+        "button_key": "SAVE_SLACK",
+        "action": "saveSlackSettings",
+        "css_class": "btn btn-primary",
+        "sort_order": 1,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-f6a7b8c9-d0e1-41d4-a716-446655440002",
+        "button_key": "SAVE_TEAMS",
+        "action": "saveTeamsSettings",
+        "css_class": "btn btn-primary",
+        "sort_order": 2,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-f6a7b8c9-d0e1-41d4-a716-446655440003",
+        "button_key": "SAVE_EMAIL",
+        "action": "saveEmailSettings",
+        "css_class": "btn btn-primary",
+        "sort_order": 3,
+        "is_visible": true
+      },
+      {
+        "uuid": "btn-f6a7b8c9-d0e1-41d4-a716-446655440004",
+        "button_key": "SAVE_WEBHOOK",
+        "action": "saveWebhookSettings",
+        "css_class": "btn btn-primary",
+        "sort_order": 4,
+        "is_visible": true
+      }
+    ],
+    "menu_settings": [
+      {
+        "uuid": "btn-a7b8c9d0-e1f2-41d4-a716-446655440001",
+        "button_key": "SAVE_MENU_CONFIG",
+        "action": "saveMenuConfig",
+        "css_class": "btn btn-primary",
+        "sort_order": 1,
+        "is_visible": true
+      }
+    ]
+  },
+
+  "table_headers": {
+    "user_management": [
+      {
+        "uuid": "hdr-550e8400-e29b-41d4-a716-446655440101",
+        "header_key": "EMAIL",
+        "data_field": "email",
+        "sortable": true,
+        "sort_order": 1,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-550e8400-e29b-41d4-a716-446655440102",
+        "header_key": "STATUS",
+        "data_field": "isActive",
+        "sortable": true,
+        "sort_order": 2,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-550e8400-e29b-41d4-a716-446655440103",
+        "header_key": "ADMIN",
+        "data_field": "isAdmin",
+        "sortable": true,
+        "sort_order": 3,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-550e8400-e29b-41d4-a716-446655440104",
+        "header_key": "OTP",
+        "data_field": "totpEnabled",
+        "sortable": true,
+        "sort_order": 4,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-550e8400-e29b-41d4-a716-446655440105",
+        "header_key": "GROUPS",
+        "data_field": "groups",
+        "sortable": true,
+        "sort_order": 5,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-550e8400-e29b-41d4-a716-446655440106",
+        "header_key": "CREATED",
+        "data_field": "createdAt",
+        "sortable": true,
+        "sort_order": 6,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-550e8400-e29b-41d4-a716-446655440107",
+        "header_key": "ACTIONS",
+        "data_field": null,
+        "sortable": false,
+        "sort_order": 7,
+        "is_visible": true
+      }
+    ],
+    "group_management": [
+      {
+        "uuid": "hdr-a1b2c3d4-e5f6-41d4-a716-446655440101",
+        "header_key": "GROUP_NAME",
+        "data_field": "name",
+        "sortable": true,
+        "sort_order": 1,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-a1b2c3d4-e5f6-41d4-a716-446655440102",
+        "header_key": "MEMBERS",
+        "data_field": "members",
+        "sortable": true,
+        "sort_order": 2,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-a1b2c3d4-e5f6-41d4-a716-446655440103",
+        "header_key": "CREATED",
+        "data_field": "createdAt",
+        "sortable": true,
+        "sort_order": 3,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-a1b2c3d4-e5f6-41d4-a716-446655440104",
+        "header_key": "ACTIONS",
+        "data_field": null,
+        "sortable": false,
+        "sort_order": 4,
+        "is_visible": true
+      }
+    ],
+    "vm_management": [
+      {
+        "uuid": "hdr-b2c3d4e5-f6a7-41d4-a716-446655440101",
+        "header_key": "VMID",
+        "data_field": "vmid",
+        "sortable": true,
+        "sort_order": 1,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-b2c3d4e5-f6a7-41d4-a716-446655440102",
+        "header_key": "HOSTNAME",
+        "data_field": "hostname",
+        "sortable": true,
+        "sort_order": 2,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-b2c3d4e5-f6a7-41d4-a716-446655440103",
+        "header_key": "IP_ADDRESS",
+        "data_field": "ip",
+        "sortable": true,
+        "sort_order": 3,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-b2c3d4e5-f6a7-41d4-a716-446655440104",
+        "header_key": "GROUP",
+        "data_field": "group",
+        "sortable": true,
+        "sort_order": 4,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-b2c3d4e5-f6a7-41d4-a716-446655440105",
+        "header_key": "JOB_ID",
+        "data_field": "jobId",
+        "sortable": false,
+        "sort_order": 5,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-b2c3d4e5-f6a7-41d4-a716-446655440106",
+        "header_key": "STATUS",
+        "data_field": "status",
+        "sortable": true,
+        "sort_order": 6,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-b2c3d4e5-f6a7-41d4-a716-446655440107",
+        "header_key": "CREATED",
+        "data_field": "createdAt",
+        "sortable": true,
+        "sort_order": 7,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-b2c3d4e5-f6a7-41d4-a716-446655440108",
+        "header_key": "ACTIONS",
+        "data_field": null,
+        "sortable": false,
+        "sort_order": 8,
+        "is_visible": true
+      }
+    ],
+    "dashboard_vms": [
+      {
+        "uuid": "hdr-d4e5f6a7-b8c9-41d4-a716-446655440101",
+        "header_key": "VMID",
+        "data_field": "vmid",
+        "sortable": true,
+        "sort_order": 1,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-d4e5f6a7-b8c9-41d4-a716-446655440102",
+        "header_key": "HOSTNAME",
+        "data_field": "hostname",
+        "sortable": true,
+        "sort_order": 2,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-d4e5f6a7-b8c9-41d4-a716-446655440103",
+        "header_key": "IP_ADDRESS",
+        "data_field": "ip",
+        "sortable": true,
+        "sort_order": 3,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-d4e5f6a7-b8c9-41d4-a716-446655440104",
+        "header_key": "JOB_ID",
+        "data_field": "jobId",
+        "sortable": false,
+        "sort_order": 4,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-d4e5f6a7-b8c9-41d4-a716-446655440105",
+        "header_key": "GROUP",
+        "data_field": "group",
+        "sortable": true,
+        "sort_order": 5,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-d4e5f6a7-b8c9-41d4-a716-446655440106",
+        "header_key": "CREATED",
+        "data_field": "created",
+        "sortable": true,
+        "sort_order": 6,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-d4e5f6a7-b8c9-41d4-a716-446655440107",
+        "header_key": "SSH_KEY",
+        "data_field": null,
+        "sortable": false,
+        "sort_order": 7,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-d4e5f6a7-b8c9-41d4-a716-446655440108",
+        "header_key": "ACTIONS",
+        "data_field": null,
+        "sortable": false,
+        "sort_order": 8,
+        "is_visible": true,
+        "permission_level": "ADMIN_ONLY"
+      }
+    ],
+    "dashboard_vm_request_history": [
+      {
+        "uuid": "hdr-dash-req-e1f2a3b4-c5d6-41d4-a716-446655440201",
+        "header_key": "DATE",
+        "data_field": "createdAt",
+        "sortable": false,
+        "sort_order": 1,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-dash-req-e1f2a3b4-c5d6-41d4-a716-446655440202",
+        "header_key": "REQUESTER",
+        "data_field": "requesterEmail",
+        "sortable": false,
+        "sort_order": 2,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-dash-req-e1f2a3b4-c5d6-41d4-a716-446655440203",
+        "header_key": "GROUP",
+        "data_field": "groupName",
+        "sortable": false,
+        "sort_order": 3,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-dash-req-e1f2a3b4-c5d6-41d4-a716-446655440204",
+        "header_key": "TYPE",
+        "data_field": "instanceType",
+        "sortable": false,
+        "sort_order": 4,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-dash-req-e1f2a3b4-c5d6-41d4-a716-446655440205",
+        "header_key": "COUNT",
+        "data_field": "vmCount",
+        "sortable": false,
+        "sort_order": 5,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-dash-req-e1f2a3b4-c5d6-41d4-a716-446655440206",
+        "header_key": "SPEC",
+        "data_field": null,
+        "sortable": false,
+        "sort_order": 6,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-dash-req-e1f2a3b4-c5d6-41d4-a716-446655440207",
+        "header_key": "STATUS",
+        "data_field": "status",
+        "sortable": false,
+        "sort_order": 7,
+        "is_visible": true
+      }
+    ],
+    "audit_logs": [
+      {
+        "uuid": "hdr-c3d4e5f6-a7b8-41d4-a716-446655440101",
+        "header_key": "TIMESTAMP",
+        "data_field": "createdAt",
+        "sortable": false,
+        "sort_order": 1,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-c3d4e5f6-a7b8-41d4-a716-446655440102",
+        "header_key": "USER",
+        "data_field": "user",
+        "sortable": false,
+        "sort_order": 2,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-c3d4e5f6-a7b8-41d4-a716-446655440103",
+        "header_key": "ACTION",
+        "data_field": "action",
+        "sortable": false,
+        "sort_order": 3,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-c3d4e5f6-a7b8-41d4-a716-446655440104",
+        "header_key": "RESULT",
+        "data_field": "result",
+        "sortable": false,
+        "sort_order": 4,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-c3d4e5f6-a7b8-41d4-a716-446655440105",
+        "header_key": "DETAILS",
+        "data_field": "details",
+        "sortable": false,
+        "sort_order": 5,
+        "is_visible": true
+      },
+      {
+        "uuid": "hdr-c3d4e5f6-a7b8-41d4-a716-446655440106",
+        "header_key": "IP",
+        "data_field": "requestIp",
+        "sortable": false,
+        "sort_order": 6,
+        "is_visible": true
+      }
+    ]
+  },
+
+  "sections": {
+    "admin": {
+      "user_management": {
+        "uuid": "sec-550e8400-e29b-41d4-a716-446655440001",
+        "section_key": "USER_MANAGEMENT",
+        "icon": "👤",
+        "table": "user_management",
+        "buttons": "user_management"
+      },
+      "group_management": {
+        "uuid": "sec-a1b2c3d4-e5f6-41d4-a716-446655440001",
+        "section_key": "GROUP_MANAGEMENT",
+        "icon": "🏢",
+        "table": "group_management",
+        "buttons": "group_management"
+      },
+      "vm_management": {
+        "uuid": "sec-b2c3d4e5-f6a7-41d4-a716-446655440001",
+        "section_key": "DELETED_VM_MANAGEMENT",
+        "icon": "💻",
+        "table": "deleted_vm_management",
+        "buttons": "deleted_vm_management"
+      },
+      "notification_settings": {
+        "uuid": "sec-c3d4e5f6-a7b8-41d4-a716-446655440001",
+        "section_key": "NOTIFICATION_SETTINGS",
+        "icon": "🔔",
+        "buttons": "notifications"
+      },
+      "password_policy": {
+        "uuid": "sec-d4e5f6a7-b8c9-41d4-a716-446655440001",
+        "section_key": "PASSWORD_POLICY",
+        "icon": "🔒",
+        "buttons": "password_policy"
+      },
+      "audit_logs": {
+        "uuid": "sec-e5f6a7b8-c9d0-41d4-a716-446655440001",
+        "section_key": "AUDIT_LOGS",
+        "icon": "📋",
+        "table": "audit_logs",
+        "buttons": "audit_logs"
+      },
+      "menu_settings": {
+        "uuid": "sec-f6a7b8c9-d0e1-41d4-a716-446655440001",
+        "section_key": "MENU_SETTINGS",
+        "icon": "⚙️",
+        "buttons": "menu_settings"
+      }
+    },
+    "dashboard": {
+      "my_groups": {
+        "uuid": "sec-d4e5f6a7-b8c9-41d4-a716-446655440101",
+        "section_key": "MY_GROUPS",
+        "icon": "👥"
+      },
+      "jobs_vms": {
+        "uuid": "sec-d4e5f6a7-b8c9-41d4-a716-446655440102",
+        "section_key": "JOBS_VMS",
+        "icon": "💻",
+        "table": "dashboard_vms",
+        "buttons": "dashboard"
+      },
+      "vm_request_history": {
+        "uuid": "sec-dash-req-e1f2a3b4-c5d6-41d4-a716-446655440201",
+        "section_key": "VM_REQUEST_HISTORY",
+        "icon": "📋",
+        "table": "dashboard_vm_request_history"
+      }
+    }
+  },
+
+  "form_labels": [
+    { "uuid": "lbl-001", "label_key": "EMAIL" },
+    { "uuid": "lbl-002", "label_key": "PASSWORD" },
+    { "uuid": "lbl-003", "label_key": "NEW_PASSWORD" },
+    { "uuid": "lbl-004", "label_key": "GROUP" },
+    { "uuid": "lbl-005", "label_key": "ADMIN_PRIVILEGES" },
+    { "uuid": "lbl-006", "label_key": "GROUP_NAME" },
+    { "uuid": "lbl-007", "label_key": "SELECT_USER" },
+    { "uuid": "lbl-008", "label_key": "SELECT_GROUP" },
+    { "uuid": "lbl-009", "label_key": "VMID" },
+    { "uuid": "lbl-010", "label_key": "HOSTNAME" },
+    { "uuid": "lbl-011", "label_key": "IP_ADDRESS" },
+    { "uuid": "lbl-012", "label_key": "NODE" },
+    { "uuid": "lbl-013", "label_key": "PRIVATE_KEY" },
+    { "uuid": "lbl-014", "label_key": "PUBLIC_KEY" },
+    { "uuid": "lbl-015", "label_key": "OTP_CODE" },
+    { "uuid": "lbl-016", "label_key": "SMTP_HOST" },
+    { "uuid": "lbl-017", "label_key": "SMTP_PORT" },
+    { "uuid": "lbl-018", "label_key": "SMTP_USER" },
+    { "uuid": "lbl-019", "label_key": "SMTP_PASSWORD" },
+    { "uuid": "lbl-020", "label_key": "FROM_ADDRESS" },
+    { "uuid": "lbl-021", "label_key": "TO_ADDRESSES" },
+    { "uuid": "lbl-022", "label_key": "WEBHOOK_URL" },
+    { "uuid": "lbl-023", "label_key": "CUSTOM_HEADERS" },
+    { "uuid": "lbl-024", "label_key": "PASSWORD_EXPIRY" },
+    { "uuid": "lbl-025", "label_key": "WARNING_PERIOD" },
+    { "uuid": "lbl-026", "label_key": "MIN_LENGTH" },
+    { "uuid": "lbl-027", "label_key": "REQUIRE_UPPERCASE" },
+    { "uuid": "lbl-028", "label_key": "REQUIRE_LOWERCASE" },
+    { "uuid": "lbl-029", "label_key": "REQUIRE_NUMBERS" },
+    { "uuid": "lbl-030", "label_key": "REQUIRE_SPECIAL_CHARS" },
+    { "uuid": "lbl-031", "label_key": "USER" }
+  ],
+
+  "modal_titles": [
+    { "uuid": "mdl-001", "modal_key": "ADD_USER" },
+    { "uuid": "mdl-002", "modal_key": "RESET_PASSWORD" },
+    { "uuid": "mdl-003", "modal_key": "CHANGE_GROUP" },
+    { "uuid": "mdl-004", "modal_key": "OTP_VERIFICATION" },
+    { "uuid": "mdl-005", "modal_key": "ADD_GROUP" },
+    { "uuid": "mdl-006", "modal_key": "EDIT_GROUP" },
+    { "uuid": "mdl-007", "modal_key": "ADD_MEMBER" },
+    { "uuid": "mdl-008", "modal_key": "ASSIGN_JOB" },
+    { "uuid": "mdl-009", "modal_key": "ADD_EXISTING_VM" }
+  ],
+
+  "modal_descriptions": [
+    { "uuid": "mdl-desc-001", "description_key": "OTP_VERIFICATION" },
+    { "uuid": "mdl-desc-002", "description_key": "ADD_EXISTING_VM" }
+  ],
+
+  "placeholders": [
+    { "uuid": "ph-001", "placeholder_key": "EMAIL" },
+    { "uuid": "ph-002", "placeholder_key": "PASSWORD" },
+    { "uuid": "ph-003", "placeholder_key": "OTP_CODE" },
+    { "uuid": "ph-004", "placeholder_key": "GROUP_NAME" },
+    { "uuid": "ph-005", "placeholder_key": "VMID" },
+    { "uuid": "ph-006", "placeholder_key": "HOSTNAME" },
+    { "uuid": "ph-007", "placeholder_key": "IP_ADDRESS" },
+    { "uuid": "ph-008", "placeholder_key": "NODE" },
+    { "uuid": "ph-009", "placeholder_key": "WEBHOOK_URL" },
+    { "uuid": "ph-010", "placeholder_key": "SMTP_HOST" },
+    { "uuid": "ph-011", "placeholder_key": "SMTP_PORT" },
+    { "uuid": "ph-012", "placeholder_key": "SMTP_USER" },
+    { "uuid": "ph-013", "placeholder_key": "SMTP_PASSWORD" },
+    { "uuid": "ph-014", "placeholder_key": "FROM_ADDRESS" },
+    { "uuid": "ph-015", "placeholder_key": "TO_ADDRESSES" },
+    { "uuid": "ph-016", "placeholder_key": "CUSTOM_HEADERS" },
+    { "uuid": "ph-017", "placeholder_key": "SEARCH_VMS" }
+  ],
+
+  "button_common": [
+    { "uuid": "btn-cmn-001", "button_key": "CANCEL" },
+    { "uuid": "btn-cmn-002", "button_key": "CREATE" },
+    { "uuid": "btn-cmn-003", "button_key": "UPDATE" },
+    { "uuid": "btn-cmn-004", "button_key": "SAVE" },
+    { "uuid": "btn-cmn-005", "button_key": "DELETE" },
+    { "uuid": "btn-cmn-006", "button_key": "CLOSE" },
+    { "uuid": "btn-cmn-007", "button_key": "SUBMIT" },
+    { "uuid": "btn-cmn-008", "button_key": "VERIFY" },
+    { "uuid": "btn-cmn-009", "button_key": "DOWNLOAD" },
+    { "uuid": "btn-cmn-010", "button_key": "UPLOAD" },
+    { "uuid": "btn-cmn-011", "button_key": "ADD" },
+    { "uuid": "btn-cmn-012", "button_key": "REMOVE" },
+    { "uuid": "btn-cmn-013", "button_key": "ASSIGN" },
+    { "uuid": "btn-cmn-014", "button_key": "RESTORE" },
+    { "uuid": "btn-cmn-015", "button_key": "RESET" }
+  ],
+
+  "messages": [
+    { "uuid": "msg-001", "message_key": "LOADING" },
+    { "uuid": "msg-002", "message_key": "NO_DATA" },
+    { "uuid": "msg-003", "message_key": "NO_USERS" },
+    { "uuid": "msg-004", "message_key": "NO_GROUPS" },
+    { "uuid": "msg-005", "message_key": "NO_VMS" },
+    { "uuid": "msg-006", "message_key": "NO_AUDIT_LOGS" },
+    { "uuid": "msg-007", "message_key": "TRASH_EMPTY" },
+    { "uuid": "msg-008", "message_key": "NO_GROUPS_ASSIGNED" },
+    { "uuid": "msg-009", "message_key": "VM_CREATION_NOTE" },
+    { "uuid": "msg-010", "message_key": "SUCCESS_USER_CREATED" },
+    { "uuid": "msg-011", "message_key": "SUCCESS_USER_DEACTIVATED" },
+    { "uuid": "msg-012", "message_key": "SUCCESS_USER_ACTIVATED" },
+    { "uuid": "msg-013", "message_key": "SUCCESS_USER_DELETED" },
+    { "uuid": "msg-014", "message_key": "SUCCESS_PASSWORD_RESET" },
+    { "uuid": "msg-015", "message_key": "SUCCESS_OTP_RESET" },
+    { "uuid": "msg-016", "message_key": "SUCCESS_GROUP_CHANGED" },
+    { "uuid": "msg-017", "message_key": "SUCCESS_GROUP_CREATED" },
+    { "uuid": "msg-018", "message_key": "SUCCESS_GROUP_DELETED" },
+    { "uuid": "msg-019", "message_key": "SUCCESS_GROUP_UPDATED" },
+    { "uuid": "msg-020", "message_key": "SUCCESS_MEMBER_ADDED" },
+    { "uuid": "msg-021", "message_key": "SUCCESS_MEMBER_REMOVED" },
+    { "uuid": "msg-022", "message_key": "SUCCESS_VM_RESTORED" },
+    { "uuid": "msg-023", "message_key": "SUCCESS_VM_DELETED" },
+    { "uuid": "msg-024", "message_key": "SUCCESS_VM_ADDED" },
+    { "uuid": "msg-025", "message_key": "SUCCESS_SETTINGS_SAVED" },
+    { "uuid": "msg-026", "message_key": "SUCCESS_MENU_SAVED" },
+    { "uuid": "msg-027", "message_key": "ERROR_REQUIRED_FIELDS" },
+    { "uuid": "msg-028", "message_key": "ERROR_INVALID_OTP" },
+    { "uuid": "msg-029", "message_key": "ERROR_CHALLENGE_EXPIRED" },
+    { "uuid": "msg-030", "message_key": "ERROR_GROUP_HAS_MEMBERS" },
+    { "uuid": "msg-031", "message_key": "ERROR_GROUP_HAS_VMS" },
+    { "uuid": "msg-032", "message_key": "ERROR_GROUP_HAS_JOBS" },
+    { "uuid": "msg-033", "message_key": "ERROR_GROUP_NAME_EXISTS" },
+    { "uuid": "msg-034", "message_key": "ERROR_CANNOT_CHANGE_OWN_ADMIN" },
+    { "uuid": "msg-035", "message_key": "ERROR_INVALID_JSON" },
+    { "uuid": "msg-036", "message_key": "ERROR_NETWORK" }
+  ],
+
+  "confirmations": [
+    { "uuid": "cnf-001", "confirmation_key": "DEACTIVATE_USER" },
+    { "uuid": "cnf-002", "confirmation_key": "ACTIVATE_USER" },
+    { "uuid": "cnf-003", "confirmation_key": "DELETE_USER" },
+    { "uuid": "cnf-004", "confirmation_key": "RESET_OTP" },
+    { "uuid": "cnf-005", "confirmation_key": "ENABLE_ADMIN" },
+    { "uuid": "cnf-006", "confirmation_key": "DELETE_GROUP" },
+    { "uuid": "cnf-007", "confirmation_key": "REMOVE_MEMBER" },
+    { "uuid": "cnf-008", "confirmation_key": "RESTORE_VM" },
+    { "uuid": "cnf-009", "confirmation_key": "DELETE_VM" },
+    { "uuid": "cnf-010", "confirmation_key": "DELETE_VM_PERMANENT" }
+  ],
+
+  "badges": [
+    { "uuid": "bdg-001", "badge_key": "ACTIVE" },
+    { "uuid": "bdg-002", "badge_key": "INACTIVE" },
+    { "uuid": "bdg-003", "badge_key": "ADMIN" },
+    { "uuid": "bdg-004", "badge_key": "MEMBER" },
+    { "uuid": "bdg-005", "badge_key": "ENABLED" },
+    { "uuid": "bdg-006", "badge_key": "OFF" },
+    { "uuid": "bdg-007", "badge_key": "SUCCESS" },
+    { "uuid": "bdg-008", "badge_key": "FAIL" },
+    { "uuid": "bdg-009", "badge_key": "DELETED" }
+  ],
+
+  "notifications": [
+    { "uuid": "ntf-001", "notification_key": "SLACK_TITLE" },
+    { "uuid": "ntf-002", "notification_key": "TEAMS_TITLE" },
+    { "uuid": "ntf-003", "notification_key": "EMAIL_TITLE" },
+    { "uuid": "ntf-004", "notification_key": "WEBHOOK_TITLE" },
+    { "uuid": "ntf-005", "notification_key": "ENABLE_NOTIFICATIONS" },
+    { "uuid": "ntf-006", "notification_key": "WEBHOOK_URL_LABEL" },
+    { "uuid": "ntf-007", "notification_key": "WEBHOOK_URL_HELP" },
+    { "uuid": "ntf-008", "notification_key": "TEAMS_WEBHOOK_HELP" },
+    { "uuid": "ntf-009", "notification_key": "WEBHOOK_HEADERS_HELP" },
+    { "uuid": "ntf-010", "notification_key": "EMAIL_TO_HELP" },
+    { "uuid": "ntf-011", "notification_key": "PASSWORD_EXPIRY_HELP" },
+    { "uuid": "ntf-012", "notification_key": "WARNING_DAYS_HELP" }
+  ],
+
+  "menu_settings": [
+    { "uuid": "mnu-set-001", "setting_key": "INFO_TITLE" },
+    { "uuid": "mnu-set-002", "setting_key": "INFO_DESCRIPTION" },
+    { "uuid": "mnu-set-003", "setting_key": "MENU_CONFIG_TITLE" },
+    { "uuid": "mnu-set-004", "setting_key": "SECTION_LABELS_TITLE" }
+  ],
+
+  "ssh_key": [
+    { "uuid": "ssh-001", "ssh_key_key": "UPLOAD_TITLE" },
+    { "uuid": "ssh-002", "ssh_key_key": "UPLOAD_DESCRIPTION" },
+    { "uuid": "ssh-003", "ssh_key_key": "PRIVATE_KEY_REQUIRED" },
+    { "uuid": "ssh-004", "ssh_key_key": "PUBLIC_KEY_OPTIONAL" },
+    { "uuid": "ssh-005", "ssh_key_key": "PUBLIC_KEY_HELP" },
+    { "uuid": "ssh-006", "ssh_key_key": "CLICK_TO_VIEW" },
+    { "uuid": "ssh-007", "ssh_key_key": "CLICK_TO_HIDE" }
+  ],
+
+  "password_generation": [
+    { "uuid": "pwd-gen-001", "password_key": "AUTO_GENERATE" },
+    { "uuid": "pwd-gen-002", "password_key": "GENERATING" },
+    { "uuid": "pwd-gen-003", "password_key": "ERROR" }
+  ]
+}

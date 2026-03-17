@@ -1,0 +1,347 @@
+generator client {
+  provider = "prisma-client-js"
+  // Alpine Linux 환경(Docker)에서 Prisma 엔진이 정상 작동하도록 추가
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  passwordHash  String
+  passwordLastChanged DateTime @default(now())
+  isActive      Boolean  @default(true)
+  isAdmin       Boolean  @default(false)
+  mustChangePassword Boolean @default(true)
+
+  // 임시 비밀번호 관련 (Password Reset)
+  tempPasswordSetAt DateTime?  // 임시 비밀번호 발급 시각
+  tempPasswordExpiry DateTime? // 임시 비밀번호 만료 시각
+
+  // TOTP 설정 (초기값 NULL 허용)
+  totpSecret    String?  // base32
+  totpEnabled   Boolean  @default(false)
+
+  memberships   GroupMembership[]
+  auditLogs     AuditLog[]
+  otpRecoveryCodes OtpRecoveryCode[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model OtpRecoveryCode {
+  id         String   @id @default(cuid())
+  userId     String
+  codeHash   String
+  usedAt     DateTime?
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, usedAt])
+  @@unique([userId, codeHash])
+}
+
+model Group {
+  id        String @id @default(cuid())
+  name      String @unique
+
+  members     GroupMembership[]
+  vms         Vm[]
+  jobs        Job[]
+  deployTasks DeployTask[]
+  quota       GroupQuota?
+  vmRequests  VmRequest[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GroupMembership {
+  id        String @id @default(cuid())
+  userId    String
+  groupId    String
+  role      String @default("member")
+
+  user      User @relation(fields: [userId], references: [id])
+  group      Group @relation(fields: [groupId], references: [id])
+
+  @@unique([userId, groupId])
+}
+
+model Key {
+  id               String   @id @default(cuid())
+  fingerprint      String   @unique
+  keyVersion       String   // "shared", "v1" 등 버전 관리용
+
+  publicKey        String
+  privateKeyEnc    String   // 암호화된 private key (AES-256-GCM 결과값)
+
+  jobs             Job[]    // Key와 Job 간의 관계 명시
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Job {
+  id              String   @id @default(cuid())
+  jobId           String   @unique // Proxmox에서 넘어오는 UUID
+  groupId          String
+  node            String?
+  template        String?
+  vmCount         Int?
+  storagePool     String?
+  networkBridge   String?
+
+  keyFingerprint  String?
+  key             Key?     @relation(fields: [keyFingerprint], references: [fingerprint])
+
+  group            Group @relation(fields: [groupId], references: [id])
+  vms             Vm[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Vm {
+  id          String   @id @default(cuid())
+  groupId      String
+  jobId       String?
+
+  node        String?
+  vmid        Int?
+  hostname    String?
+  ip          String?
+
+  // 리소스 정보 (할당량 계산용)
+  cpuCores     Int?
+  memoryMb     Int?
+  diskSizeGb   Int?   // 전체 디스크 합계 캐시 (VmDisk 합산, sync 시 갱신)
+
+  // VM 상태 (Proxmox 동기화)
+  status       String?   // running, stopped, paused, unknown
+  lastSyncedAt DateTime?
+
+  // 키/비밀번호 교체 이력
+  lastRotatedAt DateTime?   // 마지막 교체 성공 시각 (VM별 재시도 기준)
+
+  // OS 타입 및 Windows 자격증명
+  osType        String   @default("linux")  // "linux" | "windows"
+  winUsername   String?                      // Windows 접속 계정
+  winPasswordEnc String?                     // AES-256-GCM 암호화 비밀번호
+
+  // Soft delete
+  deletedAt   DateTime?
+  deletedBy   String?
+
+  job         Job?     @relation(fields: [jobId], references: [jobId])
+  group        Group     @relation(fields: [groupId], references: [id])
+  disks        VmDisk[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([groupId])
+  @@index([jobId])
+  @@index([deletedAt])
+}
+
+model VmDisk {
+  id       String  @id @default(cuid())
+  vmId     String
+  slot     String  // "scsi0", "scsi1", "virtio0", "sata0" 등
+  sizeGb   Int
+  storage  String? // "pve-pool", "local-zfs" 등
+
+  vm       Vm      @relation(fields: [vmId], references: [id], onDelete: Cascade)
+
+  @@unique([vmId, slot])
+  @@index([vmId])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String?
+  action      String   // KEY_DOWNLOAD, LOGIN 등
+  result      String   // SUCCESS, FAIL
+  reason      String?
+
+  requestIp   String?
+  userAgent   String?
+
+  groupId      String?
+  jobId       String?
+  vmId        String?
+  keyVersion  String?
+  fingerprint String?
+
+  user        User? @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+}
+
+model SystemConfig {
+  id        String   @id @default(cuid())
+  key       String   @unique // 설정 키 (예: "password_policy")
+  value     String   // JSON 형태로 저장
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+// ─── Proxmox VM 배포 시스템 ───
+
+model PveNode {
+  id          String   @id @default(cuid())
+  name        String   @unique  // 노드 이름 (pve01, pve02...)
+  host        String             // API 주소 (https://10.10.20.1:8006)
+  tokenId     String             // API Token ID (user@pam!tokenname)
+  tokenSecret String             // API Token Secret (AES-256-GCM 암호화)
+  isOnline    Boolean  @default(true)
+  lastChecked DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model DeployTemplate {
+  id             String  @id @default(cuid())
+  name           String  @unique   // "WEB", "WAS", "DB" 등
+  displayName    String             // "Web 서버", "WAS 서버"...
+  cpuCores       Int
+  memoryMb       Int
+  diskSizeGb     Int
+  extraDiskGb    Int     @default(0)
+  extraDiskCount Int     @default(0)
+  fsType         String  @default("xfs")
+  description    String?
+  sortOrder      Int     @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model DeployTask {
+  id              String   @id @default(cuid())
+  jobId           String   @unique @default(uuid())
+  status          String   @default("PENDING")
+    // PENDING → RUNNING → COMPLETED / FAILED / PARTIAL
+
+  groupId          String
+  node            String
+  templateName    String
+  vmSource        String   // "cloud-image" | "template-clone"
+  sourceTemplateVmid Int?  // template-clone시 원본 VMID
+  cloudImageVolid String?  // cloud-image시 import-from 소스 (ex: local:iso/ubuntu-24.04.raw)
+
+  // VM 생성 파라미터
+  vmCount         Int
+  startVmid       Int
+  hostnamePrefix  String
+  startNumber     Int      @default(1)
+  startIp         String
+  gatewayIp       String
+  dnsPrimary      String?   // Primary DNS
+  dnsSecondary    String?   // Secondary DNS
+  storagePool     String
+  networkBridge   String
+  sshPort         Int      @default(2211)
+  vmUser          String   @default("nexususer")
+
+  // 리소스 스펙
+  cpuCores        Int
+  memoryMb        Int
+  diskSizeGb      Int
+  extraDiskGb     Int      @default(0)
+  extraDiskCount  Int      @default(0)
+  fsType          String   @default("xfs")
+
+  // 진행 상황
+  progress        Int      @default(0)
+  currentStep     String?
+  completedVms    Int      @default(0)
+  failedVms       Int      @default(0)
+  errorLog        String?
+
+  // SSH 키
+  keyFingerprint  String?
+
+  createdBy       String
+  group            Group     @relation(fields: [groupId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status])
+  @@index([groupId])
+}
+
+// ─── 그룹 할당량 & VM 생성 요청 시스템 ───
+
+model GroupQuota {
+  id           String   @id @default(cuid())
+  groupId       String   @unique
+  maxCpuCores  Int      @default(-1)  // -1 = 무제한
+  maxMemoryMb  Int      @default(-1)
+  maxDiskGb    Int      @default(-1)
+  maxVmCount   Int      @default(-1)
+  group         Group     @relation(fields: [groupId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model VmRequest {
+  id              String   @id @default(cuid())
+  status          String   @default("REQUESTED")
+    // REQUESTED → APPROVED → DEPLOYING → COMPLETED/FAILED/PARTIAL
+    // REQUESTED/QUOTA_EXCEEDED → CANCELLED
+    // QUOTA_EXCEEDED → (쿼터 승인) → REQUESTED
+    // REQUESTED/QUOTA_EXCEEDED → REJECTED
+
+  // 사용자 입력 필드
+  groupId          String
+  instanceType    String        // "SMALL","MEDIUM",...,"CUSTOM"
+  vmCount         Int
+  hostnamePrefix  String
+  purpose         String?       // 요청 사유
+  cpuCores        Int
+  memoryMb        Int
+  diskSizeGb      Int
+  extraDiskGb     Int      @default(0)
+  extraDiskCount  Int      @default(0)
+  preferredOs     String?       // 사용자 선택 OS (ex: "ubuntu-24.04", "rocky-10")
+
+  // 관리자 승인 시 입력 (인프라 상세)
+  nodeId          String?
+  node            String?
+  vmSource        String?       // "cloud-image" | "template-clone"
+  sourceTemplateVmid Int?
+  cloudImageVolid String?       // cloud-image시 import-from 소스 (ex: local:iso/ubuntu-24.04.raw)
+  startVmid       Int?
+  startNumber     Int      @default(1)
+  startIp         String?
+  gatewayIp       String?
+  dnsPrimary      String?
+  dnsSecondary    String?
+  storagePool     String?
+  networkBridge   String?
+  sshPort         Int      @default(2211)
+  vmUser          String   @default("nexususer")
+  fsType          String   @default("xfs")
+
+  // 승인/반려 정보
+  reviewedBy      String?
+  reviewedAt      DateTime?
+  reviewNote      String?
+
+  // DeployTask 연결 (배포 실행 시)
+  deployTaskId    String?  @unique
+
+  requestedBy     String
+  group            Group     @relation(fields: [groupId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status])
+  @@index([groupId])
+  @@index([requestedBy])
+}

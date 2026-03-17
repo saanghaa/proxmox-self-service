@@ -1,0 +1,320 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "language": "ko",
+  "language_name": "한국어",
+  "version": "1.0.0",
+
+  "buttons": {
+    "EXPORT_CSV": "CSV 내보내기",
+    "EXPORT_ALL_VMS_CSV": "모든 VM CSV 내보내기",
+    "EXPORT_AUDIT": "감사 로그 내보내기",
+    "EXPORT_MY_VMS": "내 VM CSV 내보내기",
+    "ADD_USER": "+ 사용자 추가",
+    "ENABLE_ADMIN": "관리자 활성화",
+    "DISABLE_ADMIN": "관리자 비활성화",
+    "CHANGE_GROUP": "변경",
+    "PW_RESET": "비밀번호 재설정",
+    "OTP_RESET": "OTP 재설정",
+    "ACTIVATE": "활성화",
+    "DEACTIVATE": "비활성화",
+    "DELETE": "삭제",
+    "ADD_GROUP": "+ 그룹 추가",
+    "ADD_MEMBER": "+ 멤버 추가",
+    "EDIT": "수정",
+    "REMOVE": "제거",
+    "DELETE_GROUP": "그룹 삭제",
+    "RESTORE": "복원",
+    "ADD_EXISTING_VM": "+ 기존 VM 추가",
+    "DOWNLOAD_KEY": "다운로드",
+    "ASSIGN_JOB": "Job 할당",
+    "DELETE_VM": "삭제",
+    "SAVE_POLICY": "정책 저장",
+    "SAVE_SLACK": "Slack 설정 저장",
+    "SAVE_TEAMS": "Teams 설정 저장",
+    "SAVE_EMAIL": "Email 설정 저장",
+    "SAVE_WEBHOOK": "Webhook 설정 저장",
+    "SAVE_MENU_CONFIG": "메뉴 설정 저장",
+    "CANCEL": "취소",
+    "CREATE": "생성",
+    "UPDATE": "수정",
+    "SAVE": "저장",
+    "CLOSE": "닫기",
+    "SUBMIT": "제출",
+    "VERIFY": "인증",
+    "DOWNLOAD": "다운로드",
+    "UPLOAD": "업로드",
+    "ADD": "추가",
+    "ASSIGN": "할당",
+    "RESET": "재설정",
+    "APPROVE": "승인",
+    "REJECT": "반려",
+    "REVIEW": "검토"
+  },
+
+  "table_headers": {
+    "EMAIL": "이메일",
+    "STATUS": "상태",
+    "ADMIN": "관리자",
+    "OTP": "MFA",
+    "GROUPS": "그룹",
+    "CREATED": "생성일",
+    "ACTIONS": "Manage",
+    "GROUP_NAME": "그룹 이름",
+    "MEMBERS": "멤버",
+    "VMID": "VMID",
+    "HOSTNAME": "호스트명",
+    "IP_ADDRESS": "IP 주소",
+    "GROUP": "그룹",
+    "JOB_ID": "Job ID",
+    "VM_STATUS": "상태",
+    "SSH_KEY": "SSH 키",
+    "REQUEST_DATE": "요청일",
+    "REQUEST_TYPE": "타입",
+    "VM_COUNT": "수량",
+    "SPEC": "스펙",
+    "PURPOSE": "용도",
+    "TIMESTAMP": "시간",
+    "USER": "사용자",
+    "ACTION": "동작",
+    "RESULT": "결과",
+    "DETAILS": "상세",
+    "IP": "IP",
+    "REQUESTER": "요청자",
+    "DATE": "요청일",
+    "TYPE": "타입",
+    "COUNT": "수량"
+  },
+
+  "sections": {
+    "USER_MANAGEMENT": {
+      "title": "사용자 관리",
+      "description": "사용자 계정 및 권한 관리"
+    },
+    "GROUP_MANAGEMENT": {
+      "title": "그룹 관리",
+      "description": "그룹 및 멤버십 관리"
+    },
+    "DELETED_VM_MANAGEMENT": {
+      "title": "삭제 예정 VM 관리",
+      "description": "가상 머신 관리"
+    },
+    "NOTIFICATION_SETTINGS": {
+      "title": "알림 설정",
+      "description": "알림 채널 설정 (Slack, Teams, Email, Webhook)"
+    },
+    "PASSWORD_POLICY": {
+      "title": "보안 정책",
+      "description": "키·비밀번호 교체 권한 및 자동 교체 스케줄 설정"
+    },
+    "AUDIT_LOGS": {
+      "title": "감사 로그",
+      "description": "시스템 감사 로그 및 사용자 활동 보기"
+    },
+    "MENU_SETTINGS": {
+      "title": "메뉴 설정",
+      "description": "동적 메뉴 시스템 설정"
+    },
+    "MY_GROUPS": {
+      "title": "내 그룹",
+      "description": "소속된 그룹 목록"
+    },
+    "JOBS_VMS": {
+      "title": "Jobs & VMs",
+      "description": "가상 머신 및 배포 작업"
+    },
+    "VM_REQUEST_HISTORY": {
+      "title": "VM 생성 요청 내역",
+      "description": "VM 생성 요청 내역 조회"
+    }
+  },
+
+  "menus": {
+    "DASHBOARD": "대시보드",
+    "ADMIN_PANEL": "관리자",
+    "LOGOUT": "로그아웃",
+    "CHANGE_PASSWORD": "비밀번호 변경",
+    "USER_MANAGEMENT": "사용자",
+    "GROUP_MANAGEMENT": "사용자 그룹",
+    "DELETED_VM_MANAGEMENT": "삭제 예정 VM",
+    "NOTIFICATION_SETTINGS": "알림",
+    "PASSWORD_POLICY": "보안 정책",
+    "AUDIT_LOGS": "감사 로그",
+    "MENU_SETTINGS": "메뉴 설정",
+    "VM_MANAGEMENT": "VM 관리",
+    "MY_PROFILE": "내 프로필",
+    "SETTINGS": "설정"
+  },
+
+  "form_labels": {
+    "EMAIL": "이메일",
+    "PASSWORD": "비밀번호",
+    "NEW_PASSWORD": "새 비밀번호",
+    "GROUP": "그룹",
+    "ADMIN_PRIVILEGES": "관리자 권한",
+    "GROUP_NAME": "그룹 이름",
+    "SELECT_USER": "사용자 선택",
+    "SELECT_GROUP": "그룹 선택",
+    "VMID": "VMID",
+    "HOSTNAME": "호스트명",
+    "IP_ADDRESS": "IP 주소",
+    "NODE": "노드",
+    "PRIVATE_KEY": "개인 키 (필수)",
+    "PUBLIC_KEY": "공개 키 (선택)",
+    "OTP_CODE": "OTP 코드",
+    "SMTP_HOST": "SMTP 호스트",
+    "SMTP_PORT": "SMTP 포트",
+    "SMTP_USER": "SMTP 사용자",
+    "SMTP_PASSWORD": "SMTP 비밀번호",
+    "FROM_ADDRESS": "발신자 주소",
+    "TO_ADDRESSES": "수신자 주소 (쉼표로 구분)",
+    "WEBHOOK_URL": "Webhook URL",
+    "CUSTOM_HEADERS": "커스텀 헤더 (JSON)",
+    "PASSWORD_EXPIRY": "비밀번호 만료 기간 (일)",
+    "WARNING_PERIOD": "경고 기간 (일)",
+    "MIN_LENGTH": "최소 길이",
+    "REQUIRE_UPPERCASE": "대문자 필수",
+    "REQUIRE_LOWERCASE": "소문자 필수",
+    "REQUIRE_NUMBERS": "숫자 필수",
+    "REQUIRE_SPECIAL_CHARS": "특수문자 필수 (!@#$%^&* 등)",
+    "USER": "사용자"
+  },
+
+  "modal_titles": {
+    "ADD_USER": "사용자 추가",
+    "RESET_PASSWORD": "비밀번호 재설정",
+    "CHANGE_GROUP": "변경",
+    "OTP_VERIFICATION": "OTP 인증",
+    "ADD_GROUP": "그룹 생성",
+    "EDIT_GROUP": "그룹 이름 수정",
+    "ADD_MEMBER": "그룹원 추가",
+    "ASSIGN_JOB": "작업 할당",
+    "ADD_EXISTING_VM": "기존 VM 추가"
+  },
+
+  "modal_descriptions": {
+    "OTP_VERIFICATION": "SSH 키를 다운로드하려면 OTP 코드를 입력하세요.",
+    "ADD_EXISTING_VM": "Proxmox Horizon 설정 이전에 생성된 기존 VM을 등록합니다"
+  },
+
+  "placeholders": {
+    "EMAIL": "userid@company.com",
+    "PASSWORD": "8자 이상, 대소문자, 숫자, 특수문자 포함",
+    "OTP_CODE": "000000",
+    "GROUP_NAME": "예: dev-group",
+    "VMID": "예: 100",
+    "HOSTNAME": "예: web-server-01",
+    "IP_ADDRESS": "예: 10.10.20.100",
+    "NODE": "예: pve01",
+    "WEBHOOK_URL": "https://your-server.com/webhook",
+    "SMTP_HOST": "smtp.gmail.com",
+    "SMTP_PORT": "587",
+    "SMTP_USER": "your-email@gmail.com",
+    "SMTP_PASSWORD": "••••••••",
+    "FROM_ADDRESS": "notifications@company.com",
+    "TO_ADDRESSES": "admin1@company.com, admin2@company.com",
+    "CUSTOM_HEADERS": "{\"Authorization\": \"Bearer token\", \"X-Custom\": \"value\"}",
+    "SEARCH_VMS": "VMID, 호스트명, IP, 그룹으로 검색..."
+  },
+
+  "messages": {
+    "LOADING": "로딩 중...",
+    "NO_DATA": "데이터가 없습니다.",
+    "NO_USERS": "사용자가 없습니다",
+    "NO_GROUPS": "그룹이 없습니다",
+    "NO_VMS": "등록된 VM이 없습니다.",
+    "NO_AUDIT_LOGS": "감사 로그가 없습니다",
+    "TRASH_EMPTY": "휴지통이 비어있습니다",
+    "NO_GROUPS_ASSIGNED": "그룹에 할당되지 않았습니다. 관리자에게 문의하세요.",
+    "VM_CREATION_NOTE": "Proxmox에서 생성된 VM이 자동 반영됩니다.",
+    "SUCCESS_USER_CREATED": "사용자가 생성되었습니다",
+    "SUCCESS_USER_DEACTIVATED": "사용자가 비활성화되었습니다",
+    "SUCCESS_USER_ACTIVATED": "사용자가 활성화되었습니다",
+    "SUCCESS_USER_DELETED": "사용자가 삭제되었습니다",
+    "SUCCESS_PASSWORD_RESET": "비밀번호가 재설정되었습니다",
+    "SUCCESS_OTP_RESET": "OTP가 재설정되었습니다",
+    "SUCCESS_GROUP_CHANGED": "그룹이 변경되었습니다",
+    "SUCCESS_GROUP_CREATED": "그룹이 생성되었습니다",
+    "SUCCESS_GROUP_DELETED": "그룹이 삭제되었습니다",
+    "SUCCESS_GROUP_UPDATED": "그룹 이름이 수정되었습니다",
+    "SUCCESS_MEMBER_ADDED": "그룹원이 추가되었습니다",
+    "SUCCESS_MEMBER_REMOVED": "그룹원이 제거되었습니다",
+    "SUCCESS_VM_RESTORED": "VM이 복원되었습니다",
+    "SUCCESS_VM_DELETED": "VM이 삭제되었습니다",
+    "SUCCESS_VM_ADDED": "업로드된 SSH 키와 함께 VM이 추가되었습니다!",
+    "SUCCESS_SETTINGS_SAVED": "설정이 저장되었습니다",
+    "SUCCESS_MENU_SAVED": "메뉴 설정이 저장되었습니다. 페이지를 새로고침하세요.",
+    "ERROR_REQUIRED_FIELDS": "필수 필드가 누락되었습니다",
+    "ERROR_INVALID_OTP": "OTP 코드가 일치하지 않습니다",
+    "ERROR_CHALLENGE_EXPIRED": "인증 시간 만료 (60초)",
+    "ERROR_GROUP_HAS_MEMBERS": "그룹원이 있는 그룹은 삭제할 수 없습니다",
+    "ERROR_GROUP_HAS_VMS": "VM이 있는 그룹은 삭제할 수 없습니다",
+    "ERROR_GROUP_HAS_JOBS": "작업이 있는 그룹은 삭제할 수 없습니다",
+    "ERROR_GROUP_NAME_EXISTS": "이미 존재하는 그룹 이름입니다",
+    "ERROR_CANNOT_CHANGE_OWN_ADMIN": "자신의 관리자 권한은 변경할 수 없습니다",
+    "ERROR_INVALID_JSON": "잘못된 JSON 형식입니다",
+    "ERROR_NETWORK": "네트워크 오류가 발생했습니다"
+  },
+
+  "confirmations": {
+    "DEACTIVATE_USER": "사용자를 비활성화하시겠습니까?\n\n로그인이 불가능해집니다.",
+    "ACTIVATE_USER": "사용자를 활성화하시겠습니까?\n\n다시 로그인할 수 있게 됩니다.",
+    "DELETE_USER": "사용자를 영구 삭제하시겠습니까?\n\n이 작업은 취소할 수 없습니다!",
+    "RESET_OTP": "이 사용자의 OTP를 재설정하시겠습니까?\n\n다음 로그인 시 OTP를 다시 등록해야 합니다.",
+    "ENABLE_ADMIN": "관리자 권한을 변경하시겠습니까?",
+    "DELETE_GROUP": "그룹을 삭제하시겠습니까?\n\n이 작업은 취소할 수 없습니다.",
+    "REMOVE_MEMBER": "이 그룹원을 제거하시겠습니까?",
+    "RESTORE_VM": "VM을 복원하시겠습니까?",
+    "DELETE_VM": "이 VM을 삭제하시겠습니까?\n\n소프트 삭제가 수행됩니다. 관리자 패널에서 복원할 수 있습니다.",
+    "DELETE_VM_PERMANENT": "VM을 영구 삭제하시겠습니까?\n\n이 작업은 취소할 수 없습니다!\nVM이 데이터베이스에서 영원히 제거됩니다."
+  },
+
+  "badges": {
+    "ACTIVE": "활성",
+    "INACTIVE": "비활성",
+    "ADMIN": "관리자",
+    "MEMBER": "멤버",
+    "ENABLED": "활성화",
+    "OFF": "꺼짐",
+    "SUCCESS": "성공",
+    "FAIL": "실패",
+    "DELETED": "삭제됨"
+  },
+
+  "notifications": {
+    "SLACK_TITLE": "Slack 알림",
+    "TEAMS_TITLE": "Microsoft Teams 알림",
+    "EMAIL_TITLE": "이메일 알림",
+    "WEBHOOK_TITLE": "커스텀 Webhook",
+    "ENABLE_NOTIFICATIONS": "알림 활성화",
+    "WEBHOOK_URL_LABEL": "Webhook URL",
+    "WEBHOOK_URL_HELP": "Slack Incoming Webhook URL을 입력하세요",
+    "TEAMS_WEBHOOK_HELP": "Teams Incoming Webhook URL을 입력하세요",
+    "WEBHOOK_HEADERS_HELP": "선택사항: JSON 객체 형식의 커스텀 HTTP 헤더",
+    "EMAIL_TO_HELP": "여러 주소는 쉼표로 구분하세요",
+    "PASSWORD_EXPIRY_HELP": "0으로 설정하면 만료 비활성화",
+    "WARNING_DAYS_HELP": "만료 전 경고를 표시할 일수"
+  },
+
+  "menu_settings": {
+    "INFO_TITLE": "정보:",
+    "INFO_DESCRIPTION": "아래 JSON을 편집하여 메뉴와 섹션 제목을 변경할 수 있습니다. 저장 후 페이지를 새로고침하면 변경사항이 적용됩니다.",
+    "MENU_CONFIG_TITLE": "메뉴 구성",
+    "SECTION_LABELS_TITLE": "섹션 라벨"
+  },
+
+  "ssh_key": {
+    "UPLOAD_TITLE": "SSH 키 업로드",
+    "UPLOAD_DESCRIPTION": "VM의 기존 SSH 키 쌍을 업로드하세요. 개인 키는 필수입니다.",
+    "PRIVATE_KEY_REQUIRED": "개인 키 (필수)",
+    "PUBLIC_KEY_OPTIONAL": "공개 키 (선택)",
+    "PUBLIC_KEY_HELP": "제공되지 않으면 개인 키에서 생성됩니다",
+    "CLICK_TO_VIEW": "클릭하여 보기",
+    "CLICK_TO_HIDE": "클릭하여 숨기기"
+  },
+
+  "password_generation": {
+    "AUTO_GENERATE": "자동 생성",
+    "GENERATING": "생성 중...",
+    "ERROR": "비밀번호 생성 오류."
+  }
+}

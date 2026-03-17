@@ -1,0 +1,42 @@
+# Nginx 로그 로테이션 설정
+# 위치: /etc/logrotate.d/proxmox-nginx
+#
+# 설치 방법:
+# sudo cp config/logrotate/proxmox-nginx /etc/logrotate.d/
+# sudo chmod 644 /etc/logrotate.d/proxmox-nginx
+# sudo logrotate -d /etc/logrotate.d/proxmox-nginx  # 테스트
+
+/home/*/proxmox/data/nginx/logs/*.log {
+    # 일일 로테이션
+    daily
+
+    # 날짜를 파일명에 추가 (access-20260206.log)
+    dateext
+    dateformat -%Y%m%d
+
+    # 90일 보관
+    rotate 90
+
+    # 빈 로그 파일은 로테이트하지 않음
+    notifempty
+
+    # 로그 파일이 없어도 에러 발생하지 않음
+    missingok
+
+    # 압축 (1일 지연 - 당일 로그는 압축 안 함)
+    compress
+    delaycompress
+
+    # 새 로그 파일 권한 설정
+    create 0644 root root
+
+    # 여러 로그 파일을 한 번에 처리
+    sharedscripts
+
+    # 로테이션 후 Nginx에게 로그 재오픈 신호 전송
+    postrotate
+        # Docker 컨테이너의 Nginx에게 USR1 신호 전송 (더 효율적)
+        docker kill -s USR1 proxmox-nginx >/dev/null 2>&1 || true
+        # 또는: docker exec proxmox-nginx nginx -s reopen >/dev/null 2>&1 || true
+    endscript
+}

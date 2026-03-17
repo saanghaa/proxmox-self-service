@@ -1,0 +1,141 @@
+{
+  "common": {
+    "buttons": {
+      "login": "Login",
+      "logout": "Logout",
+      "cancel": "Cancel",
+      "submit": "Submit",
+      "save": "Save",
+      "delete": "Delete",
+      "edit": "Edit",
+      "add": "Add",
+      "close": "Close",
+      "confirm": "Confirm"
+    },
+    "messages": {
+      "success": "Operation completed successfully",
+      "error": "An error occurred",
+      "loading": "Loading...",
+      "noData": "No data available"
+    }
+  },
+  "login": {
+    "title": "Proxmox Horizon",
+    "subtitle": "Self-Service Portal",
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Password",
+    "loginButton": "Login",
+    "forgotPasswordLink": "비밀번호를 잊으셨나요?",
+    "noAccountText": "계정이 없으신가요?",
+    "registerLink": "회원가입"
+  },
+  "register": {
+    "title": "회원가입",
+    "subtitle": "Create your account",
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Password",
+    "confirmPasswordPlaceholder": "Confirm Password",
+    "registerButton": "회원가입",
+    "hasAccountText": "이미 계정이 있으신가요?",
+    "loginLink": "로그인"
+  },
+  "forgotPassword": {
+    "title": "비밀번호 찾기",
+    "subtitle": "등록된 이메일 주소로 임시 비밀번호를 발송합니다",
+    "emailPlaceholder": "등록된 이메일 주소",
+    "sendButton": "임시 비밀번호 발송",
+    "backToLogin": "로그인으로 돌아가기"
+  },
+  "otp": {
+    "title": "2단계 인증",
+    "subtitle": "모바일 앱의 OTP 번호를 입력하세요.",
+    "tokenPlaceholder": "000000",
+    "submitButton": "로그인"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "myGroups": "내 그룹",
+    "myVms": "내 VM 목록",
+    "vmRequest": "VM 생성 요청",
+    "jobsAndVms": "Jobs & VMs",
+    "searchPlaceholder": "Search VMID, hostname, IP, Group...",
+    "noVms": "VM이 없습니다",
+    "noRequests": "VM 생성 요청 내역이 없습니다. 위 버튼을 눌러 요청하세요."
+  },
+  "forms": {
+    "addVm": {
+      "title": "Add Existing VM",
+      "description": "Register an existing VM that was created before Proxmox Horizon setup",
+      "vmidLabel": "VMID",
+      "vmidPlaceholder": "e.g., 100",
+      "hostnameLabel": "Hostname",
+      "hostnamePlaceholder": "e.g., web-server-01",
+      "ipLabel": "IP Address",
+      "ipPlaceholder": "e.g., 10.10.20.100",
+      "nodeLabel": "Node",
+      "nodePlaceholder": "e.g., pve01",
+      "cpuLabel": "CPU (vCPU)",
+      "cpuPlaceholder": "e.g., 4",
+      "memoryLabel": "Memory (GB)",
+      "memoryPlaceholder": "e.g., 8",
+      "diskLabel": "Disk (GB)",
+      "diskPlaceholder": "e.g., 100",
+      "groupLabel": "Group",
+      "groupPlaceholder": "-- Select Group --",
+      "sshKeyTitle": "🔑 SSH Key Upload",
+      "sshKeyDescription": "Upload the existing SSH key pair from your VM. The private key is required.",
+      "privateKeyLabel": "Private Key (Required)",
+      "publicKeyLabel": "Public Key (Optional)",
+      "publicKeyHint": "If not provided, will be derived from private key",
+      "cancelButton": "Cancel",
+      "submitButton": "Add VM"
+    },
+    "vmRequest": {
+      "title": "VM 생성 요청",
+      "description": "새로운 VM을 요청합니다",
+      "instanceTypeLabel": "인스턴스 타입",
+      "vmCountLabel": "VM 개수",
+      "purposeLabel": "사용 목적",
+      "purposePlaceholder": "예: 웹 서버, DB 서버, 개발 환경 등",
+      "groupLabel": "그룹 선택",
+      "submitButton": "요청하기",
+      "cancelButton": "취소"
+    }
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "tabs": {
+      "vmRequests": "VM 생성 요청 확인",
+      "deletedVms": "삭제 예정 VM",
+      "users": "사용자",
+      "groups": "사용자 그룹",
+      "notifications": "알림",
+      "passwordPolicy": "비밀번호 정책",
+      "auditLogs": "감사 로그",
+      "menuSettings": "메뉴 설정",
+      "uiSettings": "UI 텍스트 설정"
+    },
+    "users": {
+      "title": "User Management",
+      "addButton": "Add User",
+      "exportButton": "Export CSV",
+      "emailColumn": "Email",
+      "roleColumn": "Role",
+      "groupsColumn": "Groups",
+      "actionsColumn": "Actions"
+    },
+    "uiSettings": {
+      "title": "UI 텍스트 설정",
+      "description": "페이지에 표시되는 모든 텍스트를 수정할 수 있습니다",
+      "saveButton": "저장",
+      "resetButton": "기본값으로 리셋",
+      "searchPlaceholder": "텍스트 검색...",
+      "categoryLabel": "카테고리",
+      "keyLabel": "키",
+      "valueLabel": "값",
+      "successMessage": "UI 텍스트가 저장되었습니다",
+      "errorMessage": "저장 중 오류가 발생했습니다",
+      "resetConfirm": "모든 텍스트를 기본값으로 리셋하시겠습니까?"
+    }
+  }
+}

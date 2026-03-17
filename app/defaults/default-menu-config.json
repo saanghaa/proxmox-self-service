@@ -1,0 +1,226 @@
+{
+  "header_menus": [
+    {
+      "uuid": "550e8400-e29b-41d4-a716-446655440001",
+      "menu_key": "DASHBOARD",
+      "display_name": "Dashboard",
+      "icon": "ti ti-layout-dashboard",
+      "path": "/",
+      "parent_uuid": null,
+      "permission_level": "USER",
+      "sort_order": 1,
+      "is_visible": true,
+      "show_on_pages": [
+        "admin"
+      ],
+      "description": "Go to main dashboard"
+    },
+    {
+      "uuid": "550e8400-e29b-41d4-a716-446655440002",
+      "menu_key": "ADMIN_PANEL",
+      "display_name": "Admin",
+      "icon": "ti ti-settings",
+      "path": "/admin",
+      "parent_uuid": null,
+      "permission_level": "ADMIN_ONLY",
+      "sort_order": 2,
+      "is_visible": true,
+      "show_on_pages": [
+        "dashboard"
+      ],
+      "css_class": "btn-admin",
+      "description": "Access admin panel"
+    },
+    {
+      "uuid": "550e8400-e29b-41d4-a716-446655440004",
+      "menu_key": "CHANGE_PASSWORD",
+      "display_name": "PW Change",
+      "icon": "ti ti-key",
+      "path": "/auth/change-password?voluntary=true",
+      "parent_uuid": null,
+      "permission_level": "USER",
+      "sort_order": 90,
+      "is_visible": true,
+      "show_on_pages": [
+        "dashboard",
+        "admin"
+      ],
+      "description": "Change your password"
+    },
+    {
+      "uuid": "550e8400-e29b-41d4-a716-446655440003",
+      "menu_key": "LOGOUT",
+      "display_name": "Logout",
+      "icon": "ti ti-logout",
+      "path": "/auth/logout",
+      "parent_uuid": null,
+      "permission_level": "USER",
+      "sort_order": 99,
+      "is_visible": true,
+      "show_on_pages": [
+        "dashboard",
+        "admin"
+      ],
+      "description": "Sign out from the system"
+    }
+  ],
+  "admin_tabs": [
+    {
+      "uuid": "a1b2c3d4-e5f6-41d4-a716-446655440021",
+      "menu_key": "VM_REQUESTS",
+      "display_name": "VM 생성 요청 확인",
+      "icon": "ti ti-list-check",
+      "tab_id": "tab-vm-requests",
+      "parent_uuid": null,
+      "permission_level": "ADMIN_ONLY",
+      "sort_order": 1,
+      "is_visible": true,
+      "description": "Review and approve VM creation requests"
+    },
+    {
+      "uuid": "a1b2c3d4-e5f6-41d4-a716-446655440013",
+      "menu_key": "DELETED_VM_MANAGEMENT",
+      "display_name": "삭제 예정 VM",
+      "icon": "ti ti-trash",
+      "tab_id": "tab-vms",
+      "parent_uuid": null,
+      "permission_level": "ADMIN_ONLY",
+      "sort_order": 2,
+      "is_visible": true,
+      "description": "Manage VMs pending deletion"
+    },
+    {
+      "uuid": "a1b2c3d4-e5f6-41d4-a716-446655440011",
+      "menu_key": "USER_MANAGEMENT",
+      "display_name": "사용자",
+      "icon": "ti ti-users",
+      "tab_id": "tab-users",
+      "parent_uuid": null,
+      "permission_level": "ADMIN_ONLY",
+      "sort_order": 3,
+      "is_visible": true,
+      "description": "Manage user accounts and permissions"
+    },
+    {
+      "uuid": "a1b2c3d4-e5f6-41d4-a716-446655440012",
+      "menu_key": "GROUP_MANAGEMENT",
+      "display_name": "사용자 그룹",
+      "icon": "ti ti-users-group",
+      "tab_id": "tab-groups",
+      "parent_uuid": null,
+      "permission_level": "ADMIN_ONLY",
+      "sort_order": 4,
+      "is_visible": true,
+      "description": "Manage user groups and memberships"
+    },
+    {
+      "uuid": "a1b2c3d4-e5f6-41d4-a716-446655440019",
+      "menu_key": "GROUP_QUOTA",
+      "display_name": "그룹 할당량",
+      "icon": "ti ti-chart-bar",
+      "tab_id": "tab-quota",
+      "parent_uuid": null,
+      "permission_level": "ADMIN_ONLY",
+      "sort_order": 5,
+      "is_visible": true,
+      "description": "Manage group resource quotas"
+    },
+    {
+      "uuid": "a1b2c3d4-e5f6-41d4-a716-446655440014",
+      "menu_key": "NOTIFICATION_SETTINGS",
+      "display_name": "알림",
+      "icon": "ti ti-bell",
+      "tab_id": "tab-notifications",
+      "parent_uuid": null,
+      "permission_level": "ADMIN_ONLY",
+      "sort_order": 6,
+      "is_visible": true,
+      "description": "Configure notification channels (Slack, Groups, Email, Webhook)"
+    },
+    {
+      "uuid": "a1b2c3d4-e5f6-41d4-a716-446655440015",
+      "menu_key": "PASSWORD_POLICY",
+      "display_name": "보안 정책",
+      "icon": "ti ti-lock",
+      "tab_id": "tab-password-policy",
+      "parent_uuid": null,
+      "permission_level": "ADMIN_ONLY",
+      "sort_order": 7,
+      "is_visible": true,
+      "description": "Set password strength requirements and policies"
+    },
+    {
+      "uuid": "a1b2c3d4-e5f6-41d4-a716-446655440016",
+      "menu_key": "AUDIT_LOGS",
+      "display_name": "감사 로그",
+      "icon": "ti ti-file-text",
+      "tab_id": "tab-audit",
+      "parent_uuid": null,
+      "permission_level": "ADMIN_ONLY",
+      "sort_order": 8,
+      "is_visible": true,
+      "description": "View system audit logs and user activities"
+    },
+    {
+      "uuid": "a1b2c3d4-e5f6-41d4-a716-446655440017",
+      "menu_key": "MENU_SETTINGS",
+      "display_name": "메뉴 설정",
+      "icon": "ti ti-settings-cog",
+      "tab_id": "tab-menu-settings",
+      "parent_uuid": null,
+      "permission_level": "ADMIN_ONLY",
+      "sort_order": 9,
+      "is_visible": true,
+      "description": "Configure dynamic menu system"
+    },
+    {
+      "uuid": "a1b2c3d4-e5f6-41d4-a716-446655440018",
+      "menu_key": "UI_SETTINGS",
+      "display_name": "UI 텍스트 설정",
+      "icon": "ti ti-palette",
+      "tab_id": "tab-ui-settings",
+      "parent_uuid": null,
+      "permission_level": "ADMIN_ONLY",
+      "sort_order": 10,
+      "is_visible": true,
+      "description": "Configure all UI text strings"
+    },
+    {
+      "uuid": "a1b2c3d4-e5f6-41d4-a716-446655440022",
+      "menu_key": "PROXMOX_CONNECTION",
+      "display_name": "PROXMOX 서버 연결",
+      "icon": "ti ti-server",
+      "tab_id": "tab-proxmox",
+      "parent_uuid": null,
+      "permission_level": "ADMIN_ONLY",
+      "sort_order": 11,
+      "is_visible": true,
+      "description": "Manage Proxmox API endpoint connections"
+    },
+    {
+      "uuid": "a1b2c3d4-e5f6-41d4-a716-backup000001",
+      "menu_key": "BACKUP_MANAGEMENT",
+      "display_name": "백업 & 복구",
+      "icon": "ti ti-database-export",
+      "tab_id": "tab-backup",
+      "parent_uuid": null,
+      "permission_level": "ADMIN_ONLY",
+      "sort_order": 12,
+      "is_visible": true,
+      "description": "Manage system backups and restore"
+    },
+    {
+      "uuid": "a1b2c3d4-e5f6-41d4-a716-stats0000001",
+      "menu_key": "STATISTICS",
+      "display_name": "통계",
+      "icon": "ti ti-chart-infographic",
+      "tab_id": "tab-statistics",
+      "parent_uuid": null,
+      "permission_level": "ADMIN_ONLY",
+      "sort_order": 13,
+      "is_visible": true,
+      "description": "VM usage statistics and activity dashboard"
+    }
+  ],
+  "sidebar_menus": []
+}

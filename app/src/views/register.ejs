@@ -1,0 +1,477 @@
+﻿<%#
+maintainer_name: Lee Sangha
+maintainer_email: saanghaa@gmail.com
+roles: DevOps Engineer, Site Reliability Engineer, Cloud Solutions Architect
+%>
+<%
+  const isEnglish = locals.currentLang === 'en';
+  const activeThemeTemplate = locals.activeThemeTemplate || 'proxmox';
+  const authLogoSrc = '/images/proxmox-logo-standard.png';
+  const authLogoAlt = 'Proxmox Horizon Logo';
+%>
+<!DOCTYPE html>
+<html lang="<%= isEnglish ? 'en' : 'ko' %>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= isEnglish ? 'Sign Up - Proxmox Horizon' : '회원가입 - Proxmox Horizon' %></title>
+    <link rel="stylesheet" href="/vendor/tabler-icons/dist/tabler-icons.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', -apple-system, sans-serif;
+            --auth-accent: #3b82f6;
+            --auth-accent-rgb: 59, 130, 246;
+            --auth-accent-dark: #2563eb;
+            --sb-track: #e2e8f0;
+            --sb-thumb: #94a3b8;
+            --sb-thumb-hover: #64748b;
+            background:
+                radial-gradient(1200px 520px at 8% -12%, rgba(var(--auth-accent-rgb), 0.18), transparent 62%),
+                radial-gradient(1200px 620px at 95% 108%, rgba(15, 23, 42, 0.14), transparent 64%),
+                #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        * { scrollbar-width: thin; scrollbar-color: var(--sb-thumb) var(--sb-track); }
+        *::-webkit-scrollbar { width: 8px; height: 8px; }
+        *::-webkit-scrollbar-track { background: var(--sb-track); border-radius: 8px; }
+        *::-webkit-scrollbar-thumb { background: var(--sb-thumb); border-radius: 8px; border: 1px solid var(--sb-track); }
+        *::-webkit-scrollbar-thumb:hover { background: var(--sb-thumb-hover); }
+
+        .container {
+            position: relative;
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.16);
+            backdrop-filter: blur(6px);
+            padding: 2.5rem;
+            padding-top: 3.9rem;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .logo-container {
+            display: flex; justify-content: center; margin-bottom: 1.5rem;
+        }
+        .logo-container img {
+            max-width: 220px; height: auto;
+        }
+        body.theme-template-indigo .logo-container img {
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            padding: 0;
+            box-shadow: none;
+        }
+
+        .subtitle {
+            color: #475569;
+            font-size: 1.15rem;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #475569;
+            margin-bottom: 0.4rem;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem; padding-right: 44px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--auth-accent);
+            box-shadow: 0 0 0 3px rgba(var(--auth-accent-rgb), 0.12);
+        }
+        .form-group input::-ms-reveal, .form-group input::-webkit-credentials-auto-fill-button { display: none; }
+
+        .toggle-pw {
+            position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer; padding: 4px;
+            color: #94a3b8; font-size: 1.1rem; width: auto; margin: 0;
+            transition: color 0.2s;
+        }
+        .toggle-pw:hover { color: #475569; }
+
+        .password-hint {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 0.3rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.85rem;
+            background: #0f172a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        .btn:hover {
+            background: #1e293b;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(15, 23, 42, 0.28);
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #fecaca;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #bbf7d0;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .login-link a {
+            color: var(--auth-accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .password-generate {
+            display: inline-block;
+            margin-left: 0.5rem;
+            padding: 0.4rem 0.8rem;
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+	        .password-generate:hover {
+	            background: #e2e8f0;
+	            border-color: #94a3b8;
+	        }
+
+            /* Language toggle (same API as login) */
+            .lang-toggle { position: absolute; top: 16px; right: 16px; display: flex; }
+            .toggle-wrap {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.45rem;
+            }
+            .toggle-state {
+                font-size: 0.78rem;
+                font-weight: 700;
+                letter-spacing: 0.2px;
+                color: #64748b;
+            }
+            .toggle-state.on { color: #0f172a; }
+            .toggle-switch { position: relative; width: 36px; height: 20px; display: inline-block; }
+            .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+            .toggle-slider {
+                position: absolute; inset: 0;
+                background: #cbd5e1;
+                border-radius: 999px;
+                transition: background 0.2s;
+                box-shadow: inset 0 0 0 1px rgba(15,23,42,0.08);
+            }
+            .toggle-slider::before {
+                content: '';
+                position: absolute; left: 2px; top: 2px;
+                width: 16px; height: 16px;
+                background: #ffffff;
+                border-radius: 50%;
+                box-shadow: 0 2px 6px rgba(15, 23, 42, 0.18);
+                transition: transform 0.2s;
+            }
+            .toggle-switch input:checked + .toggle-slider { background: #0f172a; }
+            .toggle-switch input:checked + .toggle-slider::before { transform: translateX(16px); }
+            .toggle-switch input:focus-visible + .toggle-slider { outline: 2px solid rgba(var(--auth-accent-rgb), 0.35); outline-offset: 2px; }
+
+        .hidden { display: none; }
+
+        body.theme-template-proxmox {
+            --auth-accent: #d06a1b;
+            --auth-accent-rgb: 208, 106, 27;
+            --auth-accent-dark: #b65b16;
+            background:
+                radial-gradient(900px 480px at 8% -12%, rgba(208, 106, 27, 0.12), transparent 60%),
+                radial-gradient(960px 520px at 95% 108%, rgba(42, 27, 17, 0.08), transparent 64%),
+                #f2f2ef;
+            color: #2a1b11;
+        }
+        body.theme-template-proxmox .container {
+            background: rgba(255, 255, 255, 0.98);
+            border-color: #e6ddd1;
+            box-shadow: 0 16px 34px rgba(42, 27, 17, 0.12);
+        }
+        body.theme-template-proxmox .subtitle,
+        body.theme-template-proxmox .form-group label,
+        body.theme-template-proxmox .toggle-state,
+        body.theme-template-proxmox .login-link { color: #7b6656; }
+        body.theme-template-proxmox .form-group input { border-color: #e6ddd1; color: #2a1b11; }
+        body.theme-template-proxmox .btn { background: #d06a1b; color: #ffffff; }
+        body.theme-template-proxmox .btn:hover { background: #b65b16; box-shadow: 0 10px 22px rgba(208, 106, 27, 0.22); }
+        body.theme-template-proxmox .login-link a { color: #d06a1b; }
+        body.theme-template-proxmox .password-generate {
+            background: #f6f2ec;
+            border-color: #e6ddd1;
+            color: #7b6656;
+        }
+        body.theme-template-dark {
+            --auth-accent: #3df2b7;
+            --auth-accent-rgb: 61, 242, 183;
+            --auth-accent-dark: #2ad8a0;
+            --sb-track: #192a44;
+            --sb-thumb: #8ea4bf;
+            --sb-thumb-hover: #b3c3d8;
+            background:
+                radial-gradient(980px 520px at 12% -8%, rgba(101, 54, 201, 0.34), transparent 62%),
+                radial-gradient(760px 420px at 88% -15%, rgba(53, 154, 255, 0.2), transparent 60%),
+                linear-gradient(180deg, #030511 0%, #080a1a 26%, #111137 62%, #220050 100%);
+            color: #e6edf7;
+        }
+        body.theme-template-dark .container {
+            background: rgba(9, 14, 28, 0.82);
+            border-color: rgba(61, 242, 183, 0.2);
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+        }
+        body.theme-template-dark .subtitle,
+        body.theme-template-dark .form-group label { color: #b9ccdf; }
+        body.theme-template-dark .form-group input {
+            background: rgba(5, 10, 20, 0.7);
+            border-color: rgba(61, 242, 183, 0.25);
+            color: #f3f8ff;
+        }
+        body.theme-template-dark .form-group input:-webkit-autofill,
+        body.theme-template-dark .form-group input:-webkit-autofill:hover,
+        body.theme-template-dark .form-group input:-webkit-autofill:focus {
+            -webkit-text-fill-color: #f3f8ff !important;
+            -webkit-box-shadow: 0 0 0 1000px rgba(5, 10, 20, 0.7) inset !important;
+            box-shadow: 0 0 0 1000px rgba(5, 10, 20, 0.7) inset !important;
+            border-color: rgba(61, 242, 183, 0.25) !important;
+            caret-color: #f3f8ff;
+            transition: background-color 9999s ease-out 0s;
+        }
+        body.theme-template-dark .btn {
+            background: linear-gradient(135deg, #2fe5ad 0%, #1db8ea 100%);
+            color: #031017;
+        }
+        body.theme-template-dark .password-generate {
+            background: rgba(159, 210, 255, 0.12);
+            color: #cfe7ff;
+            border-color: rgba(157, 246, 219, 0.35);
+        }
+        body.theme-template-dark .password-generate:hover {
+            background: rgba(159, 210, 255, 0.2);
+            border-color: rgba(157, 246, 219, 0.5);
+            color: #e5f3ff;
+        }
+        body.theme-template-dark .toggle-state,
+        body.theme-template-dark .login-link { color: #9df6db; }
+        body.theme-template-indigo {
+            --auth-accent: #2563eb;
+            --auth-accent-rgb: 37, 99, 235;
+            --auth-accent-dark: #1d4ed8;
+            background: #eef4ff;
+            color: #1e293b;
+        }
+        body.theme-template-indigo .container {
+            background: rgba(255, 255, 255, 0.98);
+            border-color: #bfdbfe;
+            box-shadow: 0 16px 34px rgba(37, 99, 235, 0.12);
+        }
+        body.theme-template-indigo .subtitle,
+        body.theme-template-indigo .form-group label,
+        body.theme-template-indigo .toggle-state,
+        body.theme-template-indigo .login-link { color: #475569; }
+        body.theme-template-indigo .form-group input { border-color: #bfdbfe; color: #1e293b; }
+        body.theme-template-indigo .btn { background: #2563eb; color: #ffffff; }
+        body.theme-template-indigo .login-link a { color: #2563eb; }
+    </style>
+</head>
+<body class="theme-template-<%= activeThemeTemplate %>">
+	    <div class="container">
+            <div class="lang-toggle">
+                <div class="toggle-wrap" title="<%= isEnglish ? 'Switch language' : '언어 전환' %>">
+                    <span class="toggle-state <%= (locals.currentLang === 'ko') ? 'on' : 'off' %>">KO</span>
+                    <label class="toggle-switch" aria-label="Language toggle">
+                        <input type="checkbox"
+                               onchange="switchLang(this.checked ? 'en' : 'ko')"
+                               <%= (locals.currentLang === 'en') ? 'checked' : '' %>>
+                        <span class="toggle-slider" aria-hidden="true"></span>
+                    </label>
+                    <span class="toggle-state <%= (locals.currentLang === 'en') ? 'on' : 'off' %>">EN</span>
+                </div>
+            </div>
+
+            <div class="logo-container">
+                <img src="<%= authLogoSrc %>" alt="<%= authLogoAlt %>">
+            </div>
+	        <p class="subtitle"><%= isEnglish ? 'Create your Proxmox Horizon account' : 'Proxmox Horizon 계정을 생성하세요' %></p>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="error"><%= error %></div>
+        <% } %>
+
+	        <% if (typeof success !== 'undefined' && success) { %>
+	            <div class="success">
+	                <%= isEnglish ? 'Sign up completed!' : '회원가입이 완료되었습니다!' %><br>
+	                <%= isEnglish ? 'You can log in after admin approval.' : '관리자 승인 후 로그인할 수 있습니다.' %>
+	            </div>
+	        <% } else { %>
+	            <form method="POST" action="/auth/register">
+	                <div class="form-group">
+	                    <label for="email"><%= isEnglish ? 'Email' : '이메일' %></label>
+	                    <input type="email" id="email" name="email" placeholder="user@company.com" required autofocus>
+	                </div>
+	
+	                <div class="form-group">
+	                    <label for="password">
+	                        <%= isEnglish ? 'Password' : '비밀번호' %>
+	                        <button type="button" class="password-generate" onclick="generatePassword()"><i class="ti ti-key" aria-hidden="true"></i> <%= isEnglish ? 'Generate' : '자동 생성' %></button>
+	                    </label>
+	                    <div class="input-wrap">
+	                        <input type="password" id="password" name="password" placeholder="<%= isEnglish ? '8+ chars incl. upper/lower/number/special' : '8자 이상, 대소문자, 숫자, 특수문자 포함' %>" required>
+	                        <button type="button" class="toggle-pw" tabindex="-1" onclick="togglePw('password', this)"><i class="ti ti-eye eye-open" aria-hidden="true"></i><i class="ti ti-eye-off eye-closed hidden" aria-hidden="true"></i></button>
+	                    </div>
+	                    <p class="password-hint"><%= isEnglish ? 'Password must be 8+ chars and include uppercase, lowercase, number, and special character.' : '비밀번호는 8자 이상, 대문자, 소문자, 숫자, 특수문자를 각각 최소 1개 포함해야 합니다.' %></p>
+	                </div>
+	
+	                <div class="form-group">
+	                    <label for="confirmPassword"><%= isEnglish ? 'Confirm Password' : '비밀번호 확인' %></label>
+	                    <div class="input-wrap">
+	                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="<%= isEnglish ? 'Re-enter your password' : '비밀번호를 다시 입력하세요' %>" required>
+	                        <button type="button" class="toggle-pw" tabindex="-1" onclick="togglePw('confirmPassword', this)"><i class="ti ti-eye eye-open" aria-hidden="true"></i><i class="ti ti-eye-off eye-closed hidden" aria-hidden="true"></i></button>
+	                    </div>
+	                </div>
+	
+	                <button type="submit" class="btn"><%= isEnglish ? 'Sign up' : '가입하기' %></button>
+	            </form>
+	        <% } %>
+	
+	        <div class="login-link">
+	            <%= isEnglish ? 'Already have an account?' : '이미 계정이 있으신가요?' %> <a href="/auth/login"><%= isEnglish ? 'Login' : '로그인' %></a>
+	        </div>
+	    </div>
+	
+	    <script>
+            // Using `var` avoids TDZ crashes if this is referenced before initialization.
+            var IS_ENGLISH = <%= isEnglish ? 'true' : 'false' %>;
+            var AUTH_ACCENT = getComputedStyle(document.body).getPropertyValue('--auth-accent').trim() || '#3b82f6';
+
+            // Persist language via cookie (preferred_lang) and reload.
+            async function switchLang(lang) {
+                try {
+                    await fetch('/api/language', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ lang })
+                    });
+                } catch (e) {}
+                location.reload();
+            }
+
+	        function togglePw(id, btn) {
+	            var input = document.getElementById(id);
+            var open = btn.querySelector('.eye-open');
+            var closed = btn.querySelector('.eye-closed');
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.style.color = AUTH_ACCENT;
+                open.style.display = 'none';
+                closed.style.display = 'block';
+            } else {
+                input.type = 'password';
+                btn.style.color = '#94a3b8';
+                open.style.display = 'block';
+                closed.style.display = 'none';
+            }
+        }
+
+	        async function generatePassword() {
+	            try {
+	                const response = await fetch('/auth/generate-password');
+	                const data = await response.json();
+
+                if (data.password) {
+                    const passwordField = document.getElementById('password');
+                    const confirmField = document.getElementById('confirmPassword');
+
+                    passwordField.type = 'text'; // Show generated password
+                    passwordField.value = data.password;
+                    confirmField.value = data.password;
+
+                    // Optional: Switch back to password type after a few seconds
+                    setTimeout(() => {
+                        passwordField.type = 'password';
+                    }, 3000);
+	                }
+	            } catch (error) {
+	                console.error('generatePassword error:', error);
+	                showClientNotice(IS_ENGLISH ? 'Failed to generate password.' : '비밀번호 생성 중 오류가 발생했습니다.');
+	            }
+	        }
+
+            function showClientNotice(message) {
+                var container = document.querySelector('.container');
+                if (!container) return;
+                var existing = document.getElementById('clientNotice');
+                if (existing) existing.remove();
+                var el = document.createElement('div');
+                el.id = 'clientNotice';
+                el.className = 'error';
+                el.textContent = String(message || '');
+                var subtitle = container.querySelector('.subtitle');
+                if (subtitle && subtitle.nextSibling) container.insertBefore(el, subtitle.nextSibling);
+                else container.appendChild(el);
+            }
+	    </script>
+</body>
+</html>

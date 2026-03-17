@@ -1,0 +1,169 @@
+﻿<!DOCTYPE html>
+<%#
+maintainer_name: Lee Sangha
+maintainer_email: saanghaa@gmail.com
+roles: DevOps Engineer, Site Reliability Engineer, Cloud Solutions Architect
+%>
+<%
+  const isEnglish = locals.currentLang === 'en';
+  const activeThemeTemplate = locals.activeThemeTemplate || 'proxmox';
+  const authLogoSrc = '/images/proxmox-logo-standard.png';
+  const authLogoAlt = 'Proxmox Horizon Logo';
+%>
+<html lang="<%= isEnglish ? 'en' : 'ko' %>">
+<head>
+    <title><%= isEnglish ? 'Proxmox Horizon - OTP Verification' : 'Proxmox Horizon - OTP 인증' %></title>
+    <style>
+        body {
+            font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f4f7f6;
+            --auth-accent: #3b82f6;
+            --auth-accent-dark: #2563eb;
+            --sb-track: #e2e8f0;
+            --sb-thumb: #94a3b8;
+            --sb-thumb-hover: #64748b;
+        }
+        * { scrollbar-width: thin; scrollbar-color: var(--sb-thumb) var(--sb-track); }
+        *::-webkit-scrollbar { width: 8px; height: 8px; }
+        *::-webkit-scrollbar-track { background: var(--sb-track); border-radius: 8px; }
+        *::-webkit-scrollbar-thumb { background: var(--sb-thumb); border-radius: 8px; border: 1px solid var(--sb-track); }
+        *::-webkit-scrollbar-thumb:hover { background: var(--sb-thumb-hover); }
+        .login-container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; width: 320px; }
+        .logo-container { display: flex; justify-content: center; margin-bottom: 1.5rem; }
+        .logo-container img { max-width: 220px; height: auto; }
+        body.theme-template-dark .logo-container img {
+            background: rgba(255, 255, 255, 0.96);
+            border: 1px solid rgba(214, 196, 176, 0.7);
+            border-radius: 8px;
+            padding: 0.35rem 0.55rem;
+            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+        }
+        body.theme-template-indigo .logo-container img {
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            padding: 0;
+            box-shadow: none;
+        }
+        input { width: 100%; padding: 10px; margin: 1rem 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1.2rem; text-align: center; letter-spacing: 5px; }
+        button { width: 100%; padding: 10px; background: var(--auth-accent); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; }
+        button:hover { background: var(--auth-accent-dark); }
+            .otp-heading { font-size: 1.15rem; font-weight: 500; color: #475569; }
+        .recovery-link { display: inline-block; margin-top: 0.9rem; font-size: 0.9rem; color: #475569; text-decoration: none; }
+        .recovery-link:hover { color: #111827; text-decoration: underline; }
+        .error { color: #dc2626; font-size: 0.9rem; margin-top: 0.5rem; }
+        body.theme-template-proxmox {
+            --auth-accent: #d06a1b;
+            --auth-accent-dark: #b65b16;
+            background: #f2f2ef;
+            color: #2a1b11;
+        }
+        body.theme-template-proxmox .login-container {
+            background: #ffffff;
+            border: 1px solid #e6ddd1;
+            box-shadow: 0 14px 30px rgba(42, 27, 17, 0.12);
+        }
+        body.theme-template-proxmox .otp-heading,
+        body.theme-template-proxmox .recovery-link { color: #7b6656; }
+        body.theme-template-proxmox input { border-color: #e6ddd1; color: #2a1b11; }
+        body.theme-template-proxmox button { background: #d06a1b; color: #ffffff; }
+        body.theme-template-proxmox button:hover { background: #b65b16; }
+        body.theme-template-proxmox .recovery-link:hover { color: #d06a1b; }
+        body.theme-template-dark,
+        body.theme-template-dark {
+            background:
+                radial-gradient(980px 520px at 12% -8%, rgba(101, 54, 201, 0.34), transparent 62%),
+                radial-gradient(760px 420px at 88% -15%, rgba(53, 154, 255, 0.2), transparent 60%),
+                linear-gradient(180deg, #030511 0%, #080a1a 26%, #111137 62%, #220050 100%);
+            --auth-accent: #3df2b7;
+            --auth-accent-dark: #2ad8a0;
+            --sb-track: #192a44;
+            --sb-thumb: #8ea4bf;
+            --sb-thumb-hover: #b3c3d8;
+            color: #e6edf7;
+        }
+        body.theme-template-dark .login-container,
+        body.theme-template-dark .login-container {
+            background: rgba(10, 14, 35, 0.84);
+            border: 1px solid rgba(61, 242, 183, 0.28);
+            box-shadow: 0 18px 42px rgba(2, 6, 23, 0.55);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+        }
+        body.theme-template-dark .otp-heading { color: #b9ccdf; }
+        body.theme-template-dark input,
+        body.theme-template-dark input {
+            background: rgba(5, 10, 26, 0.78);
+            border-color: rgba(61, 242, 183, 0.25);
+            color: #f3f8ff;
+        }
+    body.theme-template-dark button,
+    body.theme-template-dark button {
+      background: linear-gradient(135deg, #2fe5ad 0%, #1db8ea 100%);
+      color: #031017;
+    }
+    body.theme-template-dark .recovery-link { color: #9db5cf; }
+    body.theme-template-dark .recovery-link:hover { color: #d7e8fb; }
+    body.theme-template-dark {
+      --auth-accent: #3df2b7;
+      --auth-accent-dark: #2ad8a0;
+      --sb-track: #192a44;
+      --sb-thumb: #8ea4bf;
+      --sb-thumb-hover: #b3c3d8;
+      background:
+        radial-gradient(980px 520px at 12% -8%, rgba(101, 54, 201, 0.34), transparent 62%),
+        radial-gradient(760px 420px at 88% -15%, rgba(53, 154, 255, 0.2), transparent 60%),
+        linear-gradient(180deg, #030511 0%, #080a1a 26%, #111137 62%, #220050 100%);
+      color: #e6edf7;
+    }
+    body.theme-template-dark .login-container {
+      background: rgba(10, 14, 35, 0.84);
+      border: 1px solid rgba(61, 242, 183, 0.28);
+      box-shadow: 0 18px 42px rgba(2, 6, 23, 0.55);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+    }
+    body.theme-template-dark .otp-heading { color: #b9ccdf; }
+    body.theme-template-dark input {
+      background: rgba(5, 10, 26, 0.78);
+      border-color: rgba(61, 242, 183, 0.25);
+      color: #f3f8ff;
+    }
+    body.theme-template-dark button {
+      background: linear-gradient(135deg, #2fe5ad 0%, #1db8ea 100%);
+      color: #031017;
+    }
+    body.theme-template-dark .recovery-link { color: #9db5cf; }
+    body.theme-template-dark .recovery-link:hover { color: #d7e8fb; }
+    body.theme-template-indigo {
+      --auth-accent: #2563eb;
+      --auth-accent-dark: #1d4ed8;
+      background: #eef4ff;
+      color: #1e293b;
+    }
+    body.theme-template-indigo .login-container {
+      background: #ffffff;
+      border: 1px solid #bfdbfe;
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.12);
+    }
+    body.theme-template-indigo .otp-heading,
+    body.theme-template-indigo .recovery-link { color: #475569; }
+    body.theme-template-indigo input { border-color: #bfdbfe; color: #1e293b; }
+    body.theme-template-indigo button { background: #2563eb; color: #ffffff; }
+    body.theme-template-indigo .recovery-link:hover { color: #2563eb; }
+  </style>
+</head>
+<body class="theme-template-<%= activeThemeTemplate %>">
+    <div class="login-container">
+        <div class="logo-container">
+            <img src="<%= authLogoSrc %>" alt="<%= authLogoAlt %>">
+        </div>
+        <p class="otp-heading"><%= isEnglish ? 'Enter the OTP code from your authenticator app.' : '모바일 앱의 OTP 번호를 입력하세요.' %></p>
+        <form action="/auth/otp" method="POST">
+            <input type="text" name="token" placeholder="000000" required maxlength="6" autofocus>
+            <button type="submit"><%= isEnglish ? 'Verify' : '로그인' %></button>
+        </form>
+        <% if (error) { %> <p class="error"><%= error %></p> <% } %>
+        <a href="/auth/otp-recovery" class="recovery-link"><%= isEnglish ? 'Use a recovery code (device changed/lost)' : '스마트폰 변경/분실 시 복구코드 사용' %></a>
+    </div>
+</body>
+</html>

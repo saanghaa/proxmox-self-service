@@ -1,0 +1,396 @@
+﻿<!DOCTYPE html>
+<%#
+maintainer_name: Lee Sangha
+maintainer_email: saanghaa@gmail.com
+roles: DevOps Engineer, Site Reliability Engineer, Cloud Solutions Architect
+%>
+<%
+  const isEnglish = locals.currentLang === 'en';
+  const activeThemeTemplate = locals.activeThemeTemplate || 'proxmox';
+  const authLogoSrc = '/images/proxmox-logo-standard.png';
+  const authLogoAlt = 'Proxmox Horizon Logo';
+%>
+<html lang="<%= isEnglish ? 'en' : 'ko' %>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proxmox Horizon - Login</title>
+    <link rel="stylesheet" href="/vendor/tabler-icons/dist/tabler-icons.min.css">
+    <style>
+        body {
+            /* Reduce KO/EN layout shift by pinning a consistent font stack across OSes. */
+            font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; margin: 0; background: #f1f5f9;
+            --auth-accent: #3b82f6;
+            --auth-accent-rgb: 59, 130, 246;
+            --auth-accent-dark: #2563eb;
+            --sb-track: #e2e8f0;
+            --sb-thumb: #94a3b8;
+            --sb-thumb-hover: #64748b;
+        }
+        * { scrollbar-width: thin; scrollbar-color: var(--sb-thumb) var(--sb-track); }
+        *::-webkit-scrollbar { width: 8px; height: 8px; }
+        *::-webkit-scrollbar-track { background: var(--sb-track); border-radius: 8px; }
+        *::-webkit-scrollbar-thumb { background: var(--sb-thumb); border-radius: 8px; border: 1px solid var(--sb-track); }
+        *::-webkit-scrollbar-thumb:hover { background: var(--sb-thumb-hover); }
+        .login-container {
+            position: relative;
+            background: white; padding: 2.5rem; padding-top: 3.9rem; border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; width: 380px;
+        }
+        .lang-bar { position:absolute; top: 16px; right: 16px; display:flex; }
+        /* Match admin notification toggle style */
+        .toggle-wrap { display: inline-flex; align-items: center; gap: 0.45rem; }
+        .toggle-state { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.2px; color: #64748b; }
+        .toggle-state.on { color: #0f172a; }
+        .toggle-switch { position: relative; width: 36px; height: 20px; display: inline-block; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+        .toggle-slider {
+            position: absolute; inset: 0;
+            background: #cbd5e1;
+            border-radius: 999px;
+            transition: background 0.2s;
+            box-shadow: inset 0 0 0 1px rgba(15,23,42,0.08);
+        }
+        .toggle-slider::before {
+            content: '';
+            position: absolute; left: 2px; top: 2px;
+            width: 16px; height: 16px;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(15,23,42,0.18);
+            transition: transform 0.2s;
+        }
+        .toggle-switch input:checked + .toggle-slider { background: #0f172a; }
+        .toggle-switch input:checked + .toggle-slider::before { transform: translateX(16px); }
+        .toggle-switch input:focus-visible + .toggle-slider { outline: 2px solid rgba(var(--auth-accent-rgb), 0.35); outline-offset: 2px; }
+        .logo-container {
+            display: flex; justify-content: center; margin-top: 0.25rem; margin-bottom: 1rem;
+        }
+        .logo-container img {
+            max-width: 240px; height: auto;
+        }
+        body.theme-template-dark .logo-container img {
+            background: rgba(255, 255, 255, 0.96);
+            border: 1px solid rgba(214, 196, 176, 0.7);
+            border-radius: 8px;
+            padding: 0.35rem 0.55rem;
+            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+        }
+        body.theme-template-indigo .logo-container img {
+            background: rgba(255, 255, 255, 0.96);
+            border: 1px solid rgba(191, 219, 254, 0.9);
+            border-radius: 8px;
+            padding: 0.35rem 0.55rem;
+            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.12);
+        }
+        /* Keep text blocks stable between KO/EN to reduce perceived "jump" */
+        p.subtitle {
+            color: #475569; font-size: 1.15rem; font-weight: 500;
+            margin-top: 0.5rem; margin-bottom: 2rem;
+            min-height: 1.4em;
+        }
+        .input-wrap {
+            position: relative; margin: 0.4rem 0;
+        }
+        input {
+            width: 100%; padding: 12px; padding-right: 44px;
+            border: 2px solid #e2e8f0; border-radius: 8px;
+            box-sizing: border-box; font-size: 1rem; outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus { border-color: var(--auth-accent); }
+        input::-ms-reveal, input::-webkit-credentials-auto-fill-button { display: none; }
+        .toggle-pw {
+            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer; padding: 4px;
+            color: #94a3b8; font-size: 1.1rem; width: auto; margin: 0;
+            transition: color 0.2s;
+        }
+        .toggle-pw:hover { color: #475569; background: none; }
+        button {
+            width: 100%; padding: 12px; background: #0f172a; color: white;
+            border: none; border-radius: 8px; cursor: pointer;
+            font-size: 1rem; font-weight: 500; margin-top: 1rem;
+            transition: background 0.2s;
+        }
+        button:hover { background: #1e293b; }
+        /* Keep submit button height identical across KO/EN despite glyph/line-height differences. */
+        .btn-submit {
+            height: 48px;
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+        .error { color: #dc2626; font-size: 0.85rem; margin-top: 0.8rem; }
+        .register-link {
+            margin-top: 1.5rem; font-size: 0.9rem; color: #64748b;
+            min-height: 1.2em;
+        }
+        .register-link a {
+            color: var(--auth-accent); text-decoration: none; font-weight: 500;
+        }
+        .register-link a:hover { text-decoration: underline; }
+        .hidden { display: none; }
+        .remember-wrap {
+            margin-top: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        .remember-wrap input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            accent-color: var(--auth-accent);
+        }
+
+        body.theme-template-indigo { background: #eef4ff; }
+        body.theme-template-proxmox {
+            --auth-accent: #d06a1b;
+            --auth-accent-rgb: 208, 106, 27;
+            --auth-accent-dark: #b65b16;
+            background: #f2f2ef;
+            color: #2a1b11;
+        }
+        body.theme-template-proxmox .login-container {
+            background: #ffffff;
+            border: 1px solid #e6ddd1;
+            box-shadow: 0 14px 30px rgba(42, 27, 17, 0.12);
+        }
+        body.theme-template-proxmox p.subtitle { color: #7b6656; }
+        body.theme-template-proxmox input { border-color: #e6ddd1; }
+        body.theme-template-proxmox button.btn-submit { background: #d06a1b; color: #ffffff; }
+        body.theme-template-proxmox button.btn-submit:hover { background: #b65b16; }
+        body.theme-template-proxmox .register-link,
+        body.theme-template-proxmox .toggle-state { color: #7b6656; }
+        body.theme-template-proxmox .register-link a { color: #d06a1b; }
+        body.theme-template-dark,
+        body.theme-template-dark {
+            --auth-accent: #3df2b7;
+            --auth-accent-rgb: 61, 242, 183;
+            --auth-accent-dark: #2ad8a0;
+            --sb-track: #192a44;
+            --sb-thumb: #8ea4bf;
+            --sb-thumb-hover: #b3c3d8;
+            background:
+                radial-gradient(980px 520px at 12% -8%, rgba(101, 54, 201, 0.34), transparent 62%),
+                radial-gradient(760px 420px at 88% -15%, rgba(53, 154, 255, 0.2), transparent 60%),
+                linear-gradient(180deg, #030511 0%, #080a1a 26%, #111137 62%, #220050 100%);
+            color: #e6edf7;
+        }
+        body.theme-template-dark .login-container,
+        body.theme-template-dark .login-container {
+            background: rgba(10, 14, 35, 0.82);
+            border: 1px solid rgba(61, 242, 183, 0.28);
+            box-shadow: 0 18px 42px rgba(2, 6, 23, 0.55);
+            backdrop-filter: blur(10px);
+        }
+        body.theme-template-dark p.subtitle,
+        body.theme-template-dark p.subtitle { color: #b9ccdf; }
+        body.theme-template-dark input,
+        body.theme-template-dark input {
+            background: rgba(5, 10, 26, 0.78);
+            border-color: rgba(61, 242, 183, 0.25);
+            color: #f3f8ff;
+        }
+        /* Keep email field background consistent even when browser autofill is applied */
+        body.theme-template-dark #loginEmail {
+            background: rgba(5, 10, 26, 0.78);
+            color: #f3f8ff;
+        }
+        body.theme-template-dark #loginEmail:-webkit-autofill,
+        body.theme-template-dark #loginEmail:-webkit-autofill:hover,
+        body.theme-template-dark #loginEmail:-webkit-autofill:focus {
+            -webkit-text-fill-color: #f3f8ff !important;
+            -webkit-box-shadow: 0 0 0 1000px rgba(5, 10, 26, 0.78) inset !important;
+            box-shadow: 0 0 0 1000px rgba(5, 10, 26, 0.78) inset !important;
+            border-color: rgba(61, 242, 183, 0.25) !important;
+            caret-color: #f3f8ff;
+            transition: background-color 9999s ease-out 0s;
+        }
+        body.theme-template-dark button.btn-submit,
+        body.theme-template-dark button.btn-submit {
+            background: linear-gradient(135deg, #2fe5ad 0%, #1db8ea 100%);
+            color: #031017;
+        }
+        body.theme-template-dark .remember-wrap,
+        body.theme-template-dark .register-link { color: #a9bfd9; }
+        body.theme-template-dark .register-link a { color: #9df6db; }
+        body.theme-template-dark .toggle-state,
+        body.theme-template-dark .toggle-state { color: #9df6db; }
+        body.theme-template-dark {
+            --auth-accent: #3df2b7;
+            --auth-accent-rgb: 61, 242, 183;
+            --auth-accent-dark: #2ad8a0;
+            --sb-track: #192a44;
+            --sb-thumb: #8ea4bf;
+            --sb-thumb-hover: #b3c3d8;
+            background:
+                radial-gradient(980px 520px at 12% -8%, rgba(101, 54, 201, 0.34), transparent 62%),
+                radial-gradient(760px 420px at 88% -15%, rgba(53, 154, 255, 0.2), transparent 60%),
+                linear-gradient(180deg, #030511 0%, #080a1a 26%, #111137 62%, #220050 100%);
+            color: #e6edf7;
+        }
+        body.theme-template-dark .login-container {
+            background: rgba(10, 14, 35, 0.82);
+            border: 1px solid rgba(61, 242, 183, 0.28);
+            box-shadow: 0 18px 42px rgba(2, 6, 23, 0.55);
+            backdrop-filter: blur(10px);
+        }
+        body.theme-template-dark p.subtitle { color: #b9ccdf; }
+        body.theme-template-dark input {
+            background: rgba(5, 10, 26, 0.78);
+            border-color: rgba(61, 242, 183, 0.25);
+            color: #f3f8ff;
+        }
+        body.theme-template-dark #loginEmail {
+            background: rgba(5, 10, 26, 0.78);
+            color: #f3f8ff;
+        }
+        body.theme-template-dark #loginEmail:-webkit-autofill,
+        body.theme-template-dark #loginEmail:-webkit-autofill:hover,
+        body.theme-template-dark #loginEmail:-webkit-autofill:focus {
+            -webkit-text-fill-color: #f3f8ff !important;
+            -webkit-box-shadow: 0 0 0 1000px rgba(5, 10, 26, 0.78) inset !important;
+            box-shadow: 0 0 0 1000px rgba(5, 10, 26, 0.78) inset !important;
+            border-color: rgba(61, 242, 183, 0.25) !important;
+            caret-color: #f3f8ff;
+            transition: background-color 9999s ease-out 0s;
+        }
+        body.theme-template-dark button.btn-submit {
+            background: linear-gradient(135deg, #2fe5ad 0%, #1db8ea 100%);
+            color: #031017;
+        }
+        body.theme-template-dark .remember-wrap,
+        body.theme-template-dark .register-link { color: #a9bfd9; }
+        body.theme-template-dark .register-link a,
+        body.theme-template-dark .toggle-state { color: #9df6db; }
+        body.theme-template-indigo {
+            --auth-accent: #2563eb;
+            --auth-accent-rgb: 37, 99, 235;
+            --auth-accent-dark: #1d4ed8;
+            background: #eef4ff;
+            color: #1e293b;
+        }
+        body.theme-template-indigo .login-container {
+            background: rgba(255, 255, 255, 0.96);
+            border: 1px solid #bfdbfe;
+            box-shadow: 0 14px 30px rgba(37, 99, 235, 0.12);
+        }
+        body.theme-template-indigo p.subtitle,
+        body.theme-template-indigo .register-link,
+        body.theme-template-indigo .toggle-state { color: #475569; }
+        body.theme-template-indigo input { border-color: #bfdbfe; color: #1e293b; }
+        body.theme-template-indigo button.btn-submit { background: #2563eb; color: #ffffff; }
+        body.theme-template-indigo .register-link a { color: #2563eb; }
+    </style>
+</head>
+<body class="theme-template-<%= activeThemeTemplate %>">
+    <div class="login-container">
+        <div class="lang-bar">
+            <div class="toggle-wrap" aria-label="Language">
+                <span class="toggle-state <%= (locals.currentLang === 'ko') ? 'on' : 'off' %>">KO</span>
+                <label class="toggle-switch">
+                    <input type="checkbox"
+                           <%= (locals.currentLang === 'en') ? 'checked' : '' %>
+                           aria-label="Language toggle"
+                           onchange="changeLanguage(this.checked ? 'en' : 'ko')">
+                    <span class="toggle-slider" aria-hidden="true"></span>
+                </label>
+                <span class="toggle-state <%= (locals.currentLang === 'en') ? 'on' : 'off' %>">EN</span>
+            </div>
+        </div>
+        <div class="logo-container">
+            <img src="<%= authLogoSrc %>" alt="<%= authLogoAlt %>">
+        </div>
+        <p class="subtitle"><%= isEnglish ? 'Self-Service Portal' : '셀프 서비스 포털' %></p>
+        <form id="loginForm" action="/auth/login" method="POST">
+            <input type="email" id="loginEmail" name="email" placeholder="<%= isEnglish ? 'Email' : '이메일' %>" required autofocus>
+            <div class="input-wrap">
+                <input type="password" id="password" name="password" placeholder="<%= isEnglish ? 'Password' : '비밀번호' %>" required>
+                <button type="button" class="toggle-pw" tabindex="-1" onclick="togglePw('password', this)"><i class="ti ti-eye eye-open" aria-hidden="true"></i><i class="ti ti-eye-off eye-closed hidden" aria-hidden="true"></i></button>
+            </div>
+            <label class="remember-wrap" for="rememberEmail">
+                <input type="checkbox" id="rememberEmail">
+                <span><%= isEnglish ? 'Remember email' : '아이디 저장' %></span>
+            </label>
+            <button type="submit" class="btn-submit"><%= isEnglish ? 'Login' : '로그인' %></button>
+        </form>
+        <% if (error) { %> <p class="error"><%= error %></p> <% } %>
+
+        <div class="register-link">
+            <a href="/auth/forgot-password"><%= isEnglish ? 'Forgot your password?' : '비밀번호를 잊으셨나요?' %></a>
+	        </div>
+	        <div class="register-link">
+	            <%= isEnglish ? "Don't have an account?" : '계정이 없으신가요?' %>
+	            <a href="/auth/register"><%= isEnglish ? 'Sign up' : '회원가입' %></a>
+	        </div>
+    </div>
+    <script>
+        const AUTH_ACCENT = getComputedStyle(document.body).getPropertyValue('--auth-accent').trim() || '#3b82f6';
+
+        // Language switch persists via cookie (preferred_lang) and reloads the page.
+        async function changeLanguage(lang) {
+            try {
+                const response = await fetch('/api/language', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ lang })
+                });
+                if (response.ok) location.reload();
+            } catch (e) {
+                console.error('Language change error:', e);
+            }
+        }
+
+        function togglePw(id, btn) {
+            var input = document.getElementById(id);
+            var open = btn.querySelector('.eye-open');
+            var closed = btn.querySelector('.eye-closed');
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.style.color = AUTH_ACCENT;
+                open.style.display = 'none';
+                closed.style.display = 'block';
+            } else {
+                input.type = 'password';
+                btn.style.color = '#94a3b8';
+                open.style.display = 'block';
+                closed.style.display = 'none';
+            }
+        }
+
+        (function setupRememberEmail() {
+            var KEY = 'saved_login_email';
+            var emailInput = document.getElementById('loginEmail');
+            var rememberChk = document.getElementById('rememberEmail');
+            var form = document.getElementById('loginForm');
+            if (!emailInput || !rememberChk || !form) return;
+
+            try {
+                var saved = localStorage.getItem(KEY);
+                if (saved) {
+                    emailInput.value = saved;
+                    rememberChk.checked = true;
+                }
+            } catch (e) {}
+
+            form.addEventListener('submit', function () {
+                try {
+                    if (rememberChk.checked) {
+                        localStorage.setItem(KEY, (emailInput.value || '').trim());
+                    } else {
+                        localStorage.removeItem(KEY);
+                    }
+                } catch (e) {}
+            });
+        })();
+    </script>
+</body>
+</html>

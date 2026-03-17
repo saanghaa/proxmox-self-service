@@ -1,0 +1,115 @@
+# ============================================
+# Proxmox Horizon .gitignore
+# ============================================
+
+# 환경변수 및 민감한 정보
+.env
+.env.local
+.env.*.local
+.env.backup
+
+# 데이터베이스 데이터
+data/postgres/data/
+data/redis/data/
+
+# 로그 파일
+data/nginx/logs/
+data/app/logs/
+*.log
+*.log.*
+
+# 백업 파일
+data/backups/*.tar.gz
+data/backups/*.sql
+data/backups/*.dump
+data/backups/*.info
+data/backups/tmp/
+data/backups/restore-tmp/
+data/postgres/backups/
+
+# SSL 인증서 (private keys)
+data/nginx/certs/*.key
+data/nginx/certs/*.pem
+data/nginx/certs/*.pfx
+
+# 업로드 파일
+data/app/uploads/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# 빌드 출력
+dist/
+build/
+app/dist/
+out/
+
+# 테스트 커버리지
+coverage/
+.nyc_output/
+
+# 에디터 설정
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# OS 파일
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# 임시 파일
+*.tmp
+*.temp
+*.backup
+*.bak
+*~.nib
+
+# Docker
+.dockerignore
+
+# 기타
+.cache/
+.npm/
+.eslintcache
+
+# ============================================
+# 버전 관리 대상 (위 규칙의 예외)
+# ============================================
+# 다음 파일들은 버전 관리에 포함됩니다:
+# - data/nginx/default.conf (Nginx 설정)
+# - data/postgres/config/*.conf (PostgreSQL 설정)
+# - data/redis/redis.conf (Redis 설정)
+# - data/postgres/init/*.sql (초기화 스크립트)
+!data/nginx/default.conf
+!data/nginx/ssl.conf.example
+!data/postgres/config/
+!data/postgres/config/*.conf
+!data/redis/redis.conf
+!data/postgres/init/
+!data/postgres/init/*.sql
+
+# 설정 파일 템플릿 (버전 관리 O)
+!config/
+!*.example
+!.env.example
+
+# 백업 디렉토리 구조는 유지 (비어있어도)
+!data/backups/.gitkeep
+!data/app/logs/.gitkeep
+!data/app/uploads/.gitkeep
+!data/nginx/logs/.gitkeep

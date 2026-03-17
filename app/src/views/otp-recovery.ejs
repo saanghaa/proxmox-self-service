@@ -1,0 +1,183 @@
+<%#
+maintainer_name: Lee Sangha
+maintainer_email: saanghaa@gmail.com
+roles: DevOps Engineer, Site Reliability Engineer, Cloud Solutions Architect
+%>
+<%
+  const isEnglish = locals.currentLang === 'en';
+  const activeThemeTemplate = locals.activeThemeTemplate || 'proxmox';
+  const authLogoSrc = '/images/proxmox-logo-standard.png';
+  const authLogoAlt = 'Proxmox Horizon Logo';
+%>
+<!DOCTYPE html>
+<html lang="<%= isEnglish ? 'en' : 'ko' %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= isEnglish ? 'Proxmox Horizon - OTP Recovery' : 'Proxmox Horizon - OTP 복구' %></title>
+  <link rel="stylesheet" href="/vendor/tabler-icons/dist/tabler-icons.min.css">
+  <style>
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+      display:flex; justify-content:center; align-items:center; height:100vh; margin:0; background:#f1f5f9;
+      --auth-accent: #3b82f6;
+      --auth-accent-dark: #2563eb;
+      --sb-track: #e2e8f0;
+      --sb-thumb: #94a3b8;
+      --sb-thumb-hover: #64748b;
+    }
+    * { scrollbar-width: thin; scrollbar-color: var(--sb-thumb) var(--sb-track); }
+    *::-webkit-scrollbar { width: 8px; height: 8px; }
+    *::-webkit-scrollbar-track { background: var(--sb-track); border-radius: 8px; }
+    *::-webkit-scrollbar-thumb { background: var(--sb-thumb); border-radius: 8px; border: 1px solid var(--sb-track); }
+    *::-webkit-scrollbar-thumb:hover { background: var(--sb-thumb-hover); }
+    .card { background:white; padding:2rem; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); width:360px; text-align:center; }
+    .logo { display:flex; justify-content:center; margin-bottom:1.25rem; }
+    .logo img { max-width:220px; height:auto; }
+    body.theme-template-dark .logo img {
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(214, 196, 176, 0.7);
+      border-radius: 8px;
+      padding: 0.35rem 0.55rem;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+    }
+    body.theme-template-indigo .logo img {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+      box-shadow: none;
+    }
+    .title { font-size:1.1rem; font-weight:600; color:#111827; margin-bottom:0.5rem; }
+    .desc { font-size:0.9rem; color:#475569; line-height:1.45; margin-bottom:1rem; }
+    input {
+      width:100%; padding:12px; border:2px solid #cbd5e1; border-radius:8px; font-size:1rem; text-align:center; letter-spacing:2px;
+      box-sizing:border-box; outline:none; transition:border-color 0.2s;
+    }
+    input:focus { border-color: var(--auth-accent); }
+    button { width:100%; margin-top:0.9rem; padding:10px; background:var(--auth-accent); color:white; border:none; border-radius:8px; cursor:pointer; font-size:1rem; }
+    button:hover { background:var(--auth-accent-dark); }
+    .error { color:#dc2626; font-size:0.9rem; margin-top:0.7rem; }
+    .back { display:inline-flex; align-items:center; gap:0.3rem; margin-top:1rem; font-size:0.9rem; color:#64748b; text-decoration:none; }
+    .back:hover { color:#111827; text-decoration:underline; }
+    body.theme-template-dark {
+      --auth-accent: #d06a1b;
+      --auth-accent-dark: #b65b16;
+      background: #f2f2ef;
+      color: #2a1b11;
+    }
+    body.theme-template-dark .card {
+      background: #ffffff;
+      border: 1px solid #e6ddd1;
+      box-shadow: 0 14px 30px rgba(42, 27, 17, 0.12);
+    }
+    body.theme-template-proxmox .title,
+    body.theme-template-proxmox .desc,
+    body.theme-template-proxmox .back { color: #7b6656; }
+    body.theme-template-proxmox input { border-color: #e6ddd1; color: #2a1b11; }
+    body.theme-template-proxmox button { background: #d06a1b; color: #ffffff; }
+    body.theme-template-proxmox .back:hover { color: #d06a1b; }
+    body.theme-template-dark {
+      --auth-accent: #3df2b7;
+      --auth-accent-dark: #2ad8a0;
+      --sb-track: #192a44;
+      --sb-thumb: #8ea4bf;
+      --sb-thumb-hover: #b3c3d8;
+      background:
+        radial-gradient(980px 520px at 12% -8%, rgba(101, 54, 201, 0.34), transparent 62%),
+        radial-gradient(760px 420px at 88% -15%, rgba(53, 154, 255, 0.2), transparent 60%),
+        linear-gradient(180deg, #030511 0%, #080a1a 26%, #111137 62%, #220050 100%);
+      color: #e6edf7;
+    }
+    body.theme-template-dark .card {
+      background: rgba(10, 14, 35, 0.84);
+      border: 1px solid rgba(61, 242, 183, 0.28);
+      box-shadow: 0 18px 42px rgba(2, 6, 23, 0.55);
+      backdrop-filter: blur(10px);
+    }
+    body.theme-template-dark .title,
+    body.theme-template-dark .desc { color: #b9ccdf; }
+    body.theme-template-dark input {
+      background: rgba(5, 10, 26, 0.78);
+      border-color: rgba(61, 242, 183, 0.25);
+      color: #f3f8ff;
+    }
+    body.theme-template-dark button {
+      background: linear-gradient(135deg, #2fe5ad 0%, #1db8ea 100%);
+      color: #031017;
+    }
+    body.theme-template-dark .back { color: #9db5cf; }
+    body.theme-template-dark .back:hover { color: #d7e8fb; }
+    body.theme-template-dark {
+      --auth-accent: #3df2b7;
+      --auth-accent-dark: #2ad8a0;
+      --sb-track: #192a44;
+      --sb-thumb: #8ea4bf;
+      --sb-thumb-hover: #b3c3d8;
+      background:
+        radial-gradient(980px 520px at 12% -8%, rgba(101, 54, 201, 0.34), transparent 62%),
+        radial-gradient(760px 420px at 88% -15%, rgba(53, 154, 255, 0.2), transparent 60%),
+        linear-gradient(180deg, #030511 0%, #080a1a 26%, #111137 62%, #220050 100%);
+      color: #e6edf7;
+    }
+    body.theme-template-dark .card {
+      background: rgba(10, 14, 35, 0.84);
+      border: 1px solid rgba(61, 242, 183, 0.28);
+      box-shadow: 0 18px 42px rgba(2, 6, 23, 0.55);
+      backdrop-filter: blur(10px);
+    }
+    body.theme-template-dark .title,
+    body.theme-template-dark .desc { color: #b9ccdf; }
+    body.theme-template-dark input {
+      background: rgba(5, 10, 26, 0.78);
+      border-color: rgba(61, 242, 183, 0.25);
+      color: #f3f8ff;
+    }
+    body.theme-template-dark button {
+      background: linear-gradient(135deg, #2fe5ad 0%, #1db8ea 100%);
+      color: #031017;
+    }
+    body.theme-template-dark .back { color: #9db5cf; }
+    body.theme-template-dark .back:hover { color: #d7e8fb; }
+    body.theme-template-indigo {
+      --auth-accent: #2563eb;
+      --auth-accent-dark: #1d4ed8;
+      background: #eef4ff;
+      color: #1e293b;
+    }
+    body.theme-template-indigo .card {
+      background: #ffffff;
+      border: 1px solid #bfdbfe;
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.12);
+    }
+    body.theme-template-indigo .title,
+    body.theme-template-indigo .desc,
+    body.theme-template-indigo .back { color: #475569; }
+    body.theme-template-indigo input { border-color: #bfdbfe; color: #1e293b; }
+    body.theme-template-indigo button { background: #2563eb; color: #ffffff; }
+    body.theme-template-indigo .back:hover { color: #2563eb; }
+  </style>
+</head>
+<body class="theme-template-<%= activeThemeTemplate %>">
+  <div class="card">
+    <div class="logo">
+      <img src="<%= authLogoSrc %>" alt="<%= authLogoAlt %>">
+    </div>
+    <div class="title"><%= isEnglish ? 'OTP Recovery Code' : 'OTP 복구코드' %></div>
+    <div class="desc">
+      <%= isEnglish
+        ? 'If you cannot use OTP due to device change/loss, you can reset OTP using one recovery code and set it up again.'
+        : '스마트폰 변경/분실로 OTP를 사용할 수 없는 경우, 복구코드 1개로 OTP를 초기화하고 다시 등록할 수 있습니다.' %>
+    </div>
+
+    <form action="/auth/otp-recovery" method="POST">
+      <input type="text" name="code"
+             placeholder="<%= isEnglish ? 'e.g., 5586DB6B-3B90-4A01-A6F9-3E57932D375F' : '예: 5586DB6B-3B90-4A01-A6F9-3E57932D375F' %>"
+             maxlength="64" autofocus required>
+      <button type="submit"><%= isEnglish ? 'Reset OTP with Recovery Code' : '복구코드로 OTP 재등록' %></button>
+    </form>
+    <% if (error) { %><div class="error"><%= error %></div><% } %>
+    <a class="back" href="/auth/otp"><i class="ti" aria-hidden="true"></i><%= isEnglish ? 'Back to OTP' : 'OTP 화면으로 돌아가기' %></a>
+  </div>
+</body>
+</html>

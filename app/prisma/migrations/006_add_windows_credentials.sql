@@ -1,0 +1,4 @@
+-- Migration 006: Add Windows VM credential fields
+ALTER TABLE "Vm" ADD COLUMN IF NOT EXISTS "osType" TEXT NOT NULL DEFAULT 'linux';
+ALTER TABLE "Vm" ADD COLUMN IF NOT EXISTS "winUsername" TEXT;
+ALTER TABLE "Vm" ADD COLUMN IF NOT EXISTS "winPasswordEnc" TEXT;

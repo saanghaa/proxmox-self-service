@@ -1,0 +1,13 @@
+services:
+  postgres:
+    volumes:
+      - proxmox_postgres_data:/var/lib/postgresql
+      - ./servers/postgres/backups:/backups
+
+  redis:
+    volumes:
+      - proxmox_redis_data:/data
+
+volumes:
+  proxmox_postgres_data:
+  proxmox_redis_data:

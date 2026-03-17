@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<%#
+maintainer_name: Lee Sangha
+maintainer_email: saanghaa@gmail.com
+roles: DevOps Engineer, Site Reliability Engineer, Cloud Solutions Architect
+%>
+<%
+  const isEnglish = locals.currentLang === 'en';
+  const activeThemeTemplate = locals.activeThemeTemplate || 'proxmox';
+  const authLogoSrc = '/images/proxmox-logo-standard.png';
+  const authLogoAlt = 'Proxmox Horizon Logo';
+%>
+<html lang="<%= isEnglish ? 'en' : 'ko' %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= isEnglish ? 'Proxmox Horizon - OTP Recovery Codes' : 'Proxmox Horizon - OTP 복구코드' %></title>
+  <link rel="stylesheet" href="/vendor/tabler-icons/dist/tabler-icons.min.css">
+  <style>
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+      display:flex; justify-content:center; align-items:center; height:100vh; margin:0; background:#f1f5f9;
+      --auth-accent: #3b82f6;
+      --auth-accent-dark: #2563eb;
+      --sb-track: #e2e8f0;
+      --sb-thumb: #94a3b8;
+      --sb-thumb-hover: #64748b;
+    }
+    * { scrollbar-width: thin; scrollbar-color: var(--sb-thumb) var(--sb-track); }
+    *::-webkit-scrollbar { width: 8px; height: 8px; }
+    *::-webkit-scrollbar-track { background: var(--sb-track); border-radius: 8px; }
+    *::-webkit-scrollbar-thumb { background: var(--sb-thumb); border-radius: 8px; border: 1px solid var(--sb-track); }
+    *::-webkit-scrollbar-thumb:hover { background: var(--sb-thumb-hover); }
+    .card { background:white; padding:2rem; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); width:420px; }
+    .logo { display:flex; justify-content:center; margin-bottom:1.25rem; }
+    .logo img { max-width:220px; height:auto; }
+    body.theme-template-dark .logo img {
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(214, 196, 176, 0.7);
+      border-radius: 8px;
+      padding: 0.35rem 0.55rem;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+    }
+    body.theme-template-indigo .logo img {
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(191, 219, 254, 0.9);
+      border-radius: 8px;
+      padding: 0.35rem 0.55rem;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.12);
+    }
+    .title { font-size:1.1rem; font-weight:700; color:#111827; text-align:center; margin-bottom:0.5rem; }
+    .desc { font-size:0.9rem; color:#475569; text-align:center; line-height:1.45; margin-bottom:1rem; }
+    .warn { display:flex; gap:0.6rem; padding:0.9rem; border:1px solid #f59e0b; background:#fffbeb; border-radius:8px; color:#92400e; font-size:0.9rem; line-height:1.45; margin-bottom:1rem; }
+    .warn i { font-size:1.1rem; margin-top:1px; }
+    /* Recovery code is currently UUID-like; show it as a single wide row (no awkward wrapping). */
+    .codes { display:grid; grid-template-columns: 1fr; gap:0.6rem; margin:1rem 0 0.6rem; }
+    .code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.98rem;
+      padding: 0.65rem 0.8rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      background: #f8fafc;
+      text-align: center;
+      letter-spacing: 0.5px;
+      box-sizing: border-box;
+      width: 100%;
+      white-space: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      user-select: text;
+      outline: none;
+    }
+    input.code { appearance: none; -webkit-appearance: none; color: #111827; }
+    .actions { display:flex; gap:0.6rem; justify-content:flex-end; margin-top:1rem; }
+    button { padding:10px 14px; border:none; border-radius:8px; cursor:pointer; font-size:0.95rem; }
+    .btn-primary { background:var(--auth-accent); color:white; }
+    .btn-primary:hover { background:var(--auth-accent-dark); }
+    .btn-secondary { background:#64748b; color:white; }
+    .btn-secondary:hover { background:#475569; }
+    body.theme-template-proxmox .title,
+    body.theme-template-proxmox .desc { color: #7b6656; }
+    body.theme-template-proxmox .code {
+      background: #fff7ed;
+      border-color: #f1cda8;
+      color: #9a4a0f;
+    }
+    body.theme-template-proxmox .warn {
+      background: #fff7ed;
+      border-color: #f1cda8;
+      color: #9a4a0f;
+    }
+    body.theme-template-proxmox .btn-primary { background: #d06a1b; color: #ffffff; }
+    body.theme-template-proxmox .btn-secondary {
+      background: #f6f2ec;
+      border-color: #e6ddd1;
+      color: #7b6656;
+    }
+    body.theme-template-proxmox .btn-secondary:hover { border-color: #d06a1b; color: #d06a1b; }
+    body.theme-template-dark .btn-secondary:hover {
+      background: rgba(21, 37, 66, 0.95);
+    }
+    body.theme-template-dark {
+      --auth-accent: #3df2b7;
+      --auth-accent-dark: #2ad8a0;
+      --sb-track: #192a44;
+      --sb-thumb: #8ea4bf;
+      --sb-thumb-hover: #b3c3d8;
+      background:
+        radial-gradient(980px 520px at 12% -8%, rgba(101, 54, 201, 0.34), transparent 62%),
+        radial-gradient(760px 420px at 88% -15%, rgba(53, 154, 255, 0.2), transparent 60%),
+        linear-gradient(180deg, #030511 0%, #080a1a 26%, #111137 62%, #220050 100%);
+      color: #e6edf7;
+    }
+    body.theme-template-dark .card {
+      background: rgba(10, 14, 35, 0.84);
+      border: 1px solid rgba(61, 242, 183, 0.28);
+      box-shadow: 0 18px 42px rgba(2, 6, 23, 0.55);
+      backdrop-filter: blur(10px);
+    }
+    body.theme-template-dark .title,
+    body.theme-template-dark .desc { color: #b9ccdf; }
+    body.theme-template-dark .code {
+      background: rgba(5, 10, 26, 0.78);
+      border-color: rgba(61, 242, 183, 0.25);
+      color: #f3f8ff;
+    }
+    body.theme-template-dark .warn {
+      border-color: rgba(61, 242, 183, 0.3);
+      background: rgba(22, 34, 58, 0.75);
+      color: #c9d8ea;
+    }
+    body.theme-template-dark .btn-primary {
+      background: linear-gradient(135deg, #2fe5ad 0%, #1db8ea 100%);
+      color: #031017;
+    }
+    body.theme-template-dark .btn-secondary {
+      background: rgba(13, 25, 48, 0.92);
+      border: 1px solid rgba(121, 146, 179, 0.45);
+      color: #d8e6f5;
+    }
+    body.theme-template-indigo {
+      --auth-accent: #2563eb;
+      --auth-accent-dark: #1d4ed8;
+      background: #eef4ff;
+      color: #1e293b;
+    }
+    body.theme-template-indigo .card {
+      background: #ffffff;
+      border: 1px solid #bfdbfe;
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.12);
+    }
+    body.theme-template-indigo .title,
+    body.theme-template-indigo .desc { color: #475569; }
+    body.theme-template-indigo .code {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      color: #1d4ed8;
+    }
+    body.theme-template-indigo .warn {
+      background: #eff6ff;
+      border-color: #93c5fd;
+      color: #1d4ed8;
+    }
+    body.theme-template-indigo .btn-primary { background: #2563eb; color: #ffffff; }
+    body.theme-template-indigo .btn-secondary {
+      background: #dbeafe;
+      border: 1px solid #bfdbfe;
+      color: #1d4ed8;
+    }
+  </style>
+</head>
+<body class="theme-template-<%= activeThemeTemplate %>">
+  <div class="card">
+    <div class="logo">
+      <img src="<%= authLogoSrc %>" alt="<%= authLogoAlt %>">
+    </div>
+    <div class="title"><%= isEnglish ? 'OTP recovery code generated' : 'OTP 복구코드가 생성되었습니다' %></div>
+    <div class="desc"><%= isEnglish ? 'This code is shown only once. Store it in a safe place.' : '아래 코드는 1회만 표시됩니다. 안전한 곳에 저장하세요.' %></div>
+
+    <div class="warn">
+      <i class="ti ti-alert-triangle" aria-hidden="true"></i>
+      <div>
+        <strong><%= isEnglish ? 'Important:' : '중요:' %></strong>
+        <%= isEnglish
+          ? 'Use this code only if you lose access to your authenticator or change devices. The code is single-use and will be revoked immediately after use.'
+          : '복구코드는 OTP 분실/기기 변경 시에만 사용합니다. 각 코드는 1회용이며 사용 즉시 폐기됩니다.' %>
+      </div>
+    </div>
+
+    <div class="codes">
+      <% (codes || []).forEach(function(c){ %>
+        <input class="code" value="<%= c %>" readonly aria-label="OTP recovery code">
+      <% }); %>
+    </div>
+
+    <div class="actions">
+      <button id="copy-btn" type="button" class="btn-secondary" onclick="copyAll()"><%= isEnglish ? 'Copy' : '복사' %></button>
+      <form action="/auth/otp-recovery-codes/ack" method="POST" style="margin:0;">
+        <button type="submit" class="btn-primary"><%= isEnglish ? 'I saved it' : '확인했습니다' %></button>
+      </form>
+    </div>
+  </div>
+
+    <script>
+      const COPY_OK_LABEL = <%- JSON.stringify(isEnglish ? 'Copied' : '복사됨') %>;
+      const COPY_FAIL_LABEL = <%- JSON.stringify(isEnglish ? 'Copy failed' : '복사 실패') %>;
+
+      function copyAll() {
+      // Use real newlines in clipboard (not the literal "\n" characters).
+      const codes = Array.from(document.querySelectorAll('.code')).map(e => (e.value || e.textContent || '').trim()).join('\n');
+      if (!codes) return;
+      const btn = document.getElementById('copy-btn');
+      const originalLabel = btn ? btn.textContent : null;
+
+      function markCopied(ok) {
+        if (!btn || !originalLabel) return;
+        btn.textContent = ok ? COPY_OK_LABEL : COPY_FAIL_LABEL;
+        setTimeout(() => { btn.textContent = originalLabel; }, 1500);
+      }
+
+      // Prefer modern async clipboard API when available and permitted.
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(codes).then(() => markCopied(true)).catch(() => fallbackCopy());
+        return;
+      }
+
+      fallbackCopy();
+
+      function fallbackCopy() {
+        try {
+          // Fallback for HTTP / restricted contexts (execCommand is deprecated but still widely supported).
+          const ta = document.createElement('textarea');
+          ta.value = codes;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.top = '-9999px';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          ta.setSelectionRange(0, ta.value.length);
+          const ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          markCopied(!!ok);
+        } catch (e) {
+          markCopied(false);
+        }
+      }
+      }
+    </script>
+</body>
+</html>
