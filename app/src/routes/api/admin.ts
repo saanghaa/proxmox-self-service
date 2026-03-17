@@ -10,6 +10,7 @@ import { requireLogin } from "../middlewares/requireLogin";
 import { requireAdmin } from "../middlewares/requireAdmin";
 import { writeAudit } from "../../services/audit";
 import { NOTIFICATION_EVENT_KEYS, notifyAuditEvent } from "../../services/slack";
+import { SMTP_PRESETS, sendTestEmail, type EmailProvider } from "../../services/email";
 import { encryptText, decryptText } from "../../services/crypto";
 import { verifyTotp } from "../../services/totp";
 import { getGroupQuotaUsage } from "../../services/quotaService";
@@ -2035,6 +2036,7 @@ adminApi.get("/notifications", async (req, res) => {
 	          },
 	          email: {
 	            enabled: false,
+	            provider: "custom",
 	            smtpHost: "",
 	            smtpPort: 587,
 	            smtpUser: "",
@@ -2067,6 +2069,7 @@ adminApi.get("/notifications", async (req, res) => {
 		      },
 		      email: {
 		        enabled: !!parsedConfig?.email?.enabled,
+		        provider: (["gmail","naver","daum","kakao","custom"].includes(parsedConfig?.email?.provider) ? parsedConfig.email.provider : "custom") as EmailProvider,
 		        smtpHost: typeof parsedConfig?.email?.smtpHost === "string" ? parsedConfig.email.smtpHost : "",
 		        smtpPort: Number.isFinite(Number(parsedConfig?.email?.smtpPort)) ? Number(parsedConfig.email.smtpPort) : 587,
 	        smtpUser: typeof parsedConfig?.email?.smtpUser === "string" ? parsedConfig.email.smtpUser : "",
@@ -2106,7 +2109,7 @@ adminApi.get("/notifications", async (req, res) => {
 	    const currentConfig = {
 	      slack: parsedCurrent.slack || { enabled: false, webhookUrl: "", events: [...DEFAULT_NOTIFICATION_EVENTS] },
 	      teams: parsedCurrent.teams || { enabled: false, webhookUrl: "", events: [...DEFAULT_NOTIFICATION_EVENTS] },
-	      email: { enabled: false, smtpHost: "", smtpPort: 587, smtpUser: "", smtpPassword: "", from: "", to: [], events: [...DEFAULT_NOTIFICATION_EVENTS] },
+	      email: { enabled: false, provider: "custom" as EmailProvider, smtpHost: "", smtpPort: 587, smtpUser: "", smtpPassword: "", from: "", to: [], events: [...DEFAULT_NOTIFICATION_EVENTS] },
 	      webhook: { enabled: false, url: "", headers: {}, events: [...DEFAULT_NOTIFICATION_EVENTS] }
 	    };
 
@@ -2133,6 +2136,7 @@ adminApi.get("/notifications", async (req, res) => {
 	      },
 	      email: {
 	        enabled: !!mergedConfig.email?.enabled,
+	        provider: (["gmail","naver","daum","kakao","custom"].includes(mergedConfig.email?.provider) ? mergedConfig.email.provider : "custom") as EmailProvider,
 	        smtpHost: toTrimmedString(mergedConfig.email?.smtpHost),
 	        smtpPort: Number.isFinite(Number(mergedConfig.email?.smtpPort)) ? Number(mergedConfig.email?.smtpPort) : 587,
 	        smtpUser: toTrimmedString(mergedConfig.email?.smtpUser),
@@ -2170,12 +2174,13 @@ adminApi.get("/notifications", async (req, res) => {
     }
 
     if (normalizedConfig.email.enabled) {
+      const emailProvider = normalizedConfig.email.provider ?? "custom";
+      const needsCustomHost = emailProvider === "custom";
       if (
-        !normalizedConfig.email.smtpHost ||
+        (needsCustomHost && !normalizedConfig.email.smtpHost) ||
         !normalizedConfig.email.smtpUser ||
         !normalizedConfig.email.smtpPassword ||
         !normalizedConfig.email.from ||
-        !normalizedConfig.email.smtpPort ||
         normalizedConfig.email.to.length === 0
       ) {
         return res.status(400).json({ error: "EMAIL_CONFIG_REQUIRED_FIELDS" });
@@ -2235,9 +2240,24 @@ adminApi.get("/notifications", async (req, res) => {
 	    }
 	
 	    if (channel === "email") {
-	      return res.status(501).json({ error: "EMAIL_TEST_NOT_IMPLEMENTED" });
+	      const provider = (["gmail","naver","daum","kakao","custom"].includes(cfg.provider) ? cfg.provider : "custom") as EmailProvider;
+	      const preset = provider !== "custom" ? SMTP_PRESETS[provider] : null;
+	      const smtpHost = preset ? preset.host : (typeof cfg.smtpHost === "string" ? cfg.smtpHost.trim() : "");
+	      const smtpPort = preset ? preset.port : (Number.isFinite(Number(cfg.smtpPort)) ? Number(cfg.smtpPort) : 587);
+	      const smtpUser = typeof cfg.smtpUser === "string" ? cfg.smtpUser.trim() : "";
+	      const smtpPassword = typeof cfg.smtpPassword === "string" ? cfg.smtpPassword : "";
+	      const from = typeof cfg.from === "string" ? cfg.from.trim() : "";
+	      const toArray: string[] = Array.isArray(cfg.to)
+	        ? cfg.to.map((t: string) => String(t).trim()).filter(Boolean)
+	        : (typeof cfg.to === "string" ? cfg.to.split(",").map((t: string) => t.trim()).filter(Boolean) : []);
+
+	      if (!smtpHost || !smtpUser || !smtpPassword || !from || toArray.length === 0) {
+	        return res.status(400).json({ error: "EMAIL_CONFIG_REQUIRED_FIELDS" });
+	      }
+
+	      await sendTestEmail({ provider, smtpHost, smtpPort, smtpUser, smtpPassword, fromEmail: from, to: toArray });
 	    }
-	
+
 	    if (channel === "slack") {
 	      const webhookUrl = typeof cfg.webhookUrl === "string" ? cfg.webhookUrl.trim() : "";
 	      if (!webhookUrl) {
