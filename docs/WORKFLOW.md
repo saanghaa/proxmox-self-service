@@ -11,6 +11,112 @@
 
 ---
 
+## 실행 위치 요약
+
+이 저장소는 모든 스크립트를 한 서버에서 실행하는 구조가 아닙니다.
+특히 `Proxmox VE 호스트`에서 직접 실행해야 하는 파일과, `Horizon 앱 서버`에서 실행해야 하는 파일을 구분해야 합니다.
+
+| 실행 위치 | 실행 파일 | 하는 일 |
+|---|---|---|
+| Proxmox Horizon 앱 서버 | `install.sh` | Docker / Docker Compose를 준비하고 `.env` 생성, 볼륨 디렉터리 준비, 컨테이너 최초 기동까지 수행합니다. |
+| Proxmox Horizon 앱 서버 | `deploy.sh` | 기존 데이터를 유지한 채 이미지를 다시 빌드하고 컨테이너를 교체해 운영 배포를 수행합니다. |
+| Proxmox Horizon 앱 서버 | `scripts/backup-db.sh` | 실행 중인 `postgres` 컨테이너에서 DB/설정을 백업 파일로 만듭니다. |
+| Proxmox VE 호스트 | `scripts/proxmox-enable-content.sh` | Proxmox 스토리지에 `import`, `snippets` content를 활성화하고 기본 cloud-init snippet 파일을 준비합니다. |
+| Proxmox VE 호스트 | `scripts/proxmox-download-cloud-image.sh` | Proxmox 스토리지로 Ubuntu / Rocky cloud image를 직접 다운로드합니다. |
+| Proxmox VE 호스트 | `scripts/proxmox-token-rotate.sh` | Horizon이 사용할 Proxmox API 사용자/토큰을 생성하거나 교체하고 권한을 부여합니다. |
+
+### Proxmox VE 호스트에서 직접 실행해야 하는 파일
+
+아래 3개는 `docker compose`가 있는 앱 서버가 아니라, 반드시 **Proxmox VE 호스트 root 셸**에서 실행해야 합니다.
+
+클러스터 / 멀티노드 주의:
+
+- Proxmox 클러스터라고 해서 이 준비 작업이 한 노드에서만 끝나는 것은 아닙니다.
+- 현재 운영 기준은 각 노드의 `local` 스토리지를 사용하므로, **실제로 VM을 올릴 수 있는 모든 노드에서** `import`, `snippets`, cloud image 준비를 각각 해줘야 합니다.
+- 즉 `proxmox-enable-content.sh` 와 `proxmox-download-cloud-image.sh` 는 클러스터 전체에서 VM 배포 대상이 되는 노드마다 확인하고 실행해야 합니다.
+- 반면 `proxmox-token-rotate.sh` 는 보통 한 번만 수행해서 발급된 Token ID / Token Secret을 Horizon에 등록하면 됩니다.
+
+#### 1. `scripts/proxmox-enable-content.sh`
+
+역할:
+
+- `/etc/pve/storage.cfg` 기준으로 선택한 스토리지의 content 목록에 `import`, `snippets`가 포함되도록 맞춥니다.
+- 필요하면 `/var/lib/vz/snippets/proxmox-cloud-init.yaml` 기본 snippet 파일도 생성합니다.
+- 즉, Horizon이 VM 배포 시 참조할 cloud-init 리소스를 Proxmox 쪽에 먼저 준비하는 스크립트입니다.
+
+언제 실행하나:
+
+- 최초 환경 세팅 시 가장 먼저
+- 새 스토리지를 붙였거나 `local` 스토리지 content 설정이 꼬였을 때
+
+예시:
+
+```bash
+sudo bash scripts/proxmox-enable-content.sh
+```
+
+- 기본값만으로도 `local` 스토리지에 `import`, `snippets`, 기본 snippet 파일 생성까지 함께 처리합니다.
+- `--all` 은 같은 동작을 더 명시적으로 표현할 때만 사용하면 됩니다.
+- 현재 운영 문서는 `local` 스토리지 기준으로 보면 됩니다.
+- 클러스터라면 VM 배포 대상인 각 노드에서 이 작업을 모두 해줘야 합니다.
+
+#### 2. `scripts/proxmox-download-cloud-image.sh`
+
+역할:
+
+- Proxmox API(`pvesh`)로 스토리지 download task를 제출합니다.
+- Ubuntu Noble, Rocky 10 프리셋 또는 사용자 지정 URL 이미지를 `import` content 영역으로 내려받습니다.
+- 다운로드 완료까지 polling 하므로, 단순 파일 복사보다 "Proxmox가 인식하는 import 이미지"를 만드는 용도입니다.
+
+언제 실행하나:
+
+- cloud image가 아직 스토리지에 없을 때
+- OS 이미지를 교체하거나 추가할 때
+
+예시:
+
+```bash
+sudo bash scripts/proxmox-download-cloud-image.sh
+```
+
+- 기본값만으로 `ubuntu-noble`, 현재 호스트명 기준 node, `local` 스토리지, `import` content 로 다운로드합니다.
+- 보통은 기본값 그대로 `local` 스토리지에 받아 두면 됩니다.
+- 노드명이 기본값과 다를 때만 `--node <name>` 을 지정하면 됩니다.
+- 다른 이미지를 받을 때만 `--preset rocky-10` 또는 `--url <image-url>` 같은 옵션을 추가합니다.
+- 클러스터라면 이 이미지도 배포 대상인 각 노드의 `local` 스토리지에 각각 받아둬야 합니다.
+
+#### 3. `scripts/proxmox-token-rotate.sh`
+
+역할:
+
+- `pveum`으로 Proxmox 사용자와 API 토큰을 확인/생성/교체합니다.
+- 토큰을 새로 만든 뒤 `/` 경로에 `Administrator` 권한을 부여하고, 최종적으로 `Token ID`, `Token Secret`을 출력합니다.
+- Horizon 관리자 화면의 Proxmox 연결 정보에 넣는 값이 이 스크립트 결과입니다.
+
+언제 실행하나:
+
+- 최초 연동 전
+- 토큰이 유출되었거나 만료/교체가 필요할 때
+
+예시:
+
+```bash
+bash scripts/proxmox-token-rotate.sh
+```
+
+- 인자 없이 실행해도 프롬프트가 뜨고, 비우면 기본값 `proxmox@pam`, `proxmox` 를 사용합니다.
+- 기본 계정/토큰명이 아닌 경우에만 `bash scripts/proxmox-token-rotate.sh <user_id> <token_name>` 형태로 실행하면 됩니다.
+
+### Proxmox VE 호스트에서 실행하면 안 되는 파일
+
+아래 파일들은 Proxmox VE 호스트용이 아니라, **Horizon 앱 서버**에서 실행하는 운영 파일입니다.
+
+- `install.sh`: 앱 서버에 Docker 기반 서비스를 처음 설치하거나 `--init` 재설치할 때 사용
+- `deploy.sh`: 앱 서버에서 코드 반영용 rolling update 수행
+- `scripts/backup-db.sh`: 앱 서버의 `postgres` 컨테이너 백업 수행
+
+---
+
 ## 1. 최초 설치 흐름: `install.sh`
 
 ### 실행 예시
@@ -417,9 +523,12 @@ bash install.sh --init
 
 ## 7. 관련 파일
 
-- [`install.sh`](/mnt/e/auto_deploy/proxmox-self-service/install.sh)
-- [`deploy.sh`](/mnt/e/auto_deploy/proxmox-self-service/deploy.sh)
-- [`docker-compose.yml`](/mnt/e/auto_deploy/proxmox-self-service/docker-compose.yml)
-- [`app/docker-entrypoint.sh`](/mnt/e/auto_deploy/proxmox-self-service/app/docker-entrypoint.sh)
-- [`app/src/server.ts`](/mnt/e/auto_deploy/proxmox-self-service/app/src/server.ts)
-- [`app/src/routes/ui.ts`](/mnt/e/auto_deploy/proxmox-self-service/app/src/routes/ui.ts)
+- [`install.sh`](/mnt/d/proxmox-self-service/install.sh)
+- [`deploy.sh`](/mnt/d/proxmox-self-service/deploy.sh)
+- [`docker-compose.yml`](/mnt/d/proxmox-self-service/docker-compose.yml)
+- [`scripts/proxmox-enable-content.sh`](/mnt/d/proxmox-self-service/scripts/proxmox-enable-content.sh)
+- [`scripts/proxmox-download-cloud-image.sh`](/mnt/d/proxmox-self-service/scripts/proxmox-download-cloud-image.sh)
+- [`scripts/proxmox-token-rotate.sh`](/mnt/d/proxmox-self-service/scripts/proxmox-token-rotate.sh)
+- [`app/docker-entrypoint.sh`](/mnt/d/proxmox-self-service/app/docker-entrypoint.sh)
+- [`app/src/server.ts`](/mnt/d/proxmox-self-service/app/src/server.ts)
+- [`app/src/routes/ui.ts`](/mnt/d/proxmox-self-service/app/src/routes/ui.ts)
