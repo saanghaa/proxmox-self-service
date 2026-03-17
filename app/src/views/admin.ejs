@@ -2836,10 +2836,20 @@ function localeText(raw, fallbackKo, fallbackEn) {
             <div class="section-body">
                 <form id="emailForm">
                     <div class="form-group mb-1">
+                        <label><%= isEnglish ? 'Email Provider' : '이메일 프로바이더' %></label>
+                        <select id="email-provider" style="width:100%;padding:10px 12px;border:2px solid var(--notif-input-border,#e2e8f0);border-radius:8px;font-size:1rem;background:var(--notif-input-bg,#fff);color:inherit;outline:none;cursor:pointer;">
+                            <option value="gmail">Gmail (smtp.gmail.com)</option>
+                            <option value="naver">Naver (smtp.naver.com)</option>
+                            <option value="daum">Daum (smtp.daum.net)</option>
+                            <option value="kakao">Kakao (smtp.kakao.com)</option>
+                            <option value="custom"><%= isEnglish ? 'Custom (direct input)' : '직접 입력' %></option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-1" id="email-smtpHost-wrap">
                         <label><%= uuidLabels?.formLabels?.['lbl-016'] || 'SMTP Host' %></label>
                         <input type="text" id="email-smtpHost" placeholder="<%= uuidLabels?.placeholders?.['ph-010'] || 'smtp.gmail.com' %>">
                     </div>
-                    <div class="form-group mb-1">
+                    <div class="form-group mb-1" id="email-smtpPort-wrap">
                         <label><%= uuidLabels?.formLabels?.['lbl-017'] || 'SMTP Port' %></label>
                         <input type="number" id="email-smtpPort" placeholder="<%= uuidLabels?.placeholders?.['ph-011'] || '587' %>">
                     </div>
@@ -5961,6 +5971,8 @@ async function loadNotifications() {
 
         // Email
         document.getElementById('email-enabled').checked = config.email?.enabled || false;
+        const savedProvider = config.email?.provider || 'custom';
+        document.getElementById('email-provider').value = savedProvider;
         document.getElementById('email-smtpHost').value = config.email?.smtpHost || '';
         document.getElementById('email-smtpPort').value = config.email?.smtpPort || 587;
         document.getElementById('email-smtpUser').value = config.email?.smtpUser || '';
@@ -5968,6 +5980,7 @@ async function loadNotifications() {
         document.getElementById('email-from').value = config.email?.from || '';
         document.getElementById('email-to').value = config.email?.to?.join(', ') || '';
         renderNotificationEventCheckboxes('email', config.email?.events ?? null);
+        updateEmailProviderFields(savedProvider);
 
         // Webhook
         document.getElementById('webhook-enabled').checked = config.webhook?.enabled || false;
@@ -6042,8 +6055,10 @@ document.getElementById('emailForm').addEventListener('submit', async (e) => {
         const toValue = document.getElementById('email-to').value.trim();
         const toArray = toValue ? toValue.split(',').map(email => email.trim()).filter(Boolean) : [];
 
+        const emailProvider = document.getElementById('email-provider').value;
         const email = {
             enabled: document.getElementById('email-enabled').checked,
+            provider: emailProvider,
             smtpHost: document.getElementById('email-smtpHost').value.trim(),
             smtpPort: parseInt(document.getElementById('email-smtpPort').value),
             smtpUser: document.getElementById('email-smtpUser').value.trim(),
@@ -6053,11 +6068,12 @@ document.getElementById('emailForm').addEventListener('submit', async (e) => {
             events: getSelectedNotificationEvents('email')
         };
         if (email.enabled) {
-            if (!email.smtpHost || !email.smtpPort || !email.smtpUser || !email.smtpPassword || !email.from || email.to.length === 0) {
+            const needsCustomHost = emailProvider === 'custom';
+            if ((needsCustomHost && (!email.smtpHost || !email.smtpPort)) || !email.smtpUser || !email.smtpPassword || !email.from || email.to.length === 0) {
                 showAlert(
                     IS_ENGLISH
-                        ? 'SMTP host/port/user/password, From, and To are required when Email is enabled.'
-                        : '이메일 알림 활성화 시 SMTP/발신자/수신자 필드를 모두 입력해야 합니다.',
+                        ? 'User/password, From, and To are required. SMTP host/port required for Custom provider.'
+                        : '이메일 알림 활성화 시 계정/비밀번호/발신자/수신자는 필수입니다. 직접 입력 선택 시 SMTP 호스트/포트도 필요합니다.',
                     'error'
                 );
                 return;
@@ -6140,7 +6156,9 @@ document.getElementById("testEmailBtn").addEventListener("click", async () => {
     try {
         const toValue = document.getElementById("email-to").value.trim();
         const toArray = toValue ? toValue.split(",").map(email => email.trim()).filter(Boolean) : [];
+        const testProvider = document.getElementById("email-provider").value;
         const emailConfig = {
+            provider: testProvider,
             smtpHost: document.getElementById("email-smtpHost").value.trim(),
             smtpPort: parseInt(document.getElementById("email-smtpPort").value),
             smtpUser: document.getElementById("email-smtpUser").value.trim(),
@@ -6148,14 +6166,42 @@ document.getElementById("testEmailBtn").addEventListener("click", async () => {
             from: document.getElementById("email-from").value.trim(),
             to: toArray
         };
-        if (!emailConfig.smtpHost || !emailConfig.smtpPort || !emailConfig.smtpUser || !emailConfig.smtpPassword || !emailConfig.from || emailConfig.to.length === 0) {
-            showAlert("Email test requires all SMTP fields and at least one recipient", "error");
+        const needsCustomHost = testProvider === 'custom';
+        if ((needsCustomHost && (!emailConfig.smtpHost || !emailConfig.smtpPort)) || !emailConfig.smtpUser || !emailConfig.smtpPassword || !emailConfig.from || emailConfig.to.length === 0) {
+            showAlert(IS_ENGLISH ? "User/password, From, and To are required. SMTP host/port required for Custom provider." : "계정/비밀번호/발신자/수신자는 필수입니다. 직접 입력 시 SMTP 호스트/포트도 필요합니다.", "error");
             return;
         }
         await sendNotificationTest("email", emailConfig);
     } catch (e) {
         showAlert("Email test failed: " + e.message, "error");
     }
+});
+
+const SMTP_PRESETS = {
+    gmail: { host: 'smtp.gmail.com', port: 587 },
+    naver: { host: 'smtp.naver.com', port: 587 },
+    daum:  { host: 'smtp.daum.net',  port: 465 },
+    kakao: { host: 'smtp.kakao.com', port: 465 },
+};
+
+function updateEmailProviderFields(provider) {
+    const hostWrap = document.getElementById('email-smtpHost-wrap');
+    const portWrap = document.getElementById('email-smtpPort-wrap');
+    const hostInput = document.getElementById('email-smtpHost');
+    const portInput = document.getElementById('email-smtpPort');
+    if (provider && provider !== 'custom' && SMTP_PRESETS[provider]) {
+        hostInput.value = SMTP_PRESETS[provider].host;
+        portInput.value = SMTP_PRESETS[provider].port;
+        hostWrap.style.display = 'none';
+        portWrap.style.display = 'none';
+    } else {
+        hostWrap.style.display = '';
+        portWrap.style.display = '';
+    }
+}
+
+document.getElementById('email-provider').addEventListener('change', function() {
+    updateEmailProviderFields(this.value);
 });
 
 document.getElementById("testWebhookBtn").addEventListener("click", async () => {
