@@ -1,11 +1,33 @@
 /**
  * Email Service
  *
- * 임시 비밀번호 등 이메일 전송을 담당하는 서비스
- * 현재는 콘솔 로그로 출력하며, 실제 SMTP 설정 시 nodemailer 등을 사용할 수 있습니다.
+ * maintainer_name: Lee Sangha
+ * maintainer_email: saanghaa@gmail.com
+ * roles: DevOps Engineer, Site Reliability Engineer, Cloud Solutions Architect
+ *
+ * nodemailer를 사용한 실제 이메일 전송 서비스
+ * 프로바이더별 SMTP 프리셋을 지원합니다.
  */
 
+import nodemailer from "nodemailer";
+
+export type EmailProvider = "gmail" | "naver" | "daum" | "kakao" | "custom";
+
+export interface SmtpPreset {
+  host: string;
+  port: number;
+  secure: boolean;
+}
+
+export const SMTP_PRESETS: Record<Exclude<EmailProvider, "custom">, SmtpPreset> = {
+  gmail: { host: "smtp.gmail.com", port: 587, secure: false },
+  naver: { host: "smtp.naver.com", port: 587, secure: false },
+  daum:  { host: "smtp.daum.net",  port: 465, secure: true  },
+  kakao: { host: "smtp.kakao.com", port: 465, secure: true  },
+};
+
 export interface EmailConfig {
+  provider?: EmailProvider;
   smtpHost?: string;
   smtpPort?: number;
   smtpUser?: string;
@@ -14,21 +36,37 @@ export interface EmailConfig {
   fromName?: string;
 }
 
+function resolveSmtp(config: EmailConfig): { host: string; port: number; secure: boolean } {
+  const provider = config.provider ?? "custom";
+  if (provider !== "custom" && SMTP_PRESETS[provider]) {
+    return SMTP_PRESETS[provider];
+  }
+  const port = config.smtpPort ?? 587;
+  return { host: config.smtpHost ?? "", port, secure: port === 465 };
+}
+
+function createTransporter(config: EmailConfig) {
+  const { host, port, secure } = resolveSmtp(config);
+  return nodemailer.createTransport({
+    host,
+    port,
+    secure,
+    auth: {
+      user: config.smtpUser,
+      pass: config.smtpPassword,
+    },
+  });
+}
+
 /**
  * 임시 비밀번호 이메일 전송
- *
- * @param toEmail 수신자 이메일 주소
- * @param tempPassword 임시 비밀번호
- * @param expiryDate 만료 일시
  */
 export async function sendPasswordResetEmail(
   toEmail: string,
   tempPassword: string,
-  expiryDate: Date
+  expiryDate: Date,
+  config?: EmailConfig
 ): Promise<void> {
-  // TODO: 실제 SMTP 서버를 통한 이메일 전송 구현
-  // 현재는 콘솔 로그로 출력합니다.
-
   const emailContent = `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Proxmox Horizon - 임시 비밀번호 발급 안내
@@ -70,62 +108,67 @@ Proxmox Horizon
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   `;
 
-  console.log("\n" + emailContent);
+  if (!config || !isEmailConfigured(config)) {
+    console.log("\n[EMAIL - 콘솔 출력 모드]\n" + emailContent);
+    return;
+  }
 
-  // 실제 이메일 전송 예시 (nodemailer 사용 시):
-  /*
-  import nodemailer from 'nodemailer';
-
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASSWORD,
-    },
-  });
-
+  const transporter = createTransporter(config);
   await transporter.sendMail({
-    from: `"${process.env.SMTP_FROM_NAME || 'Proxmox Horizon'}" <${process.env.SMTP_FROM_EMAIL}>`,
+    from: `"${config.fromName || 'Proxmox Horizon'}" <${config.fromEmail || config.smtpUser}>`,
     to: toEmail,
     subject: 'Proxmox Horizon - 임시 비밀번호 발급 안내',
     text: emailContent,
-    html: `<pre>${emailContent}</pre>`,
   });
-  */
 }
 
 /**
- * 이메일 설정 검증
- *
- * @returns SMTP 설정이 완료되었는지 여부
+ * 알림 이메일 전송
  */
-export function isEmailConfigured(): boolean {
-  return !!(
-    process.env.SMTP_HOST &&
-    process.env.SMTP_PORT &&
-    process.env.SMTP_USER &&
-    process.env.SMTP_PASSWORD
-  );
-}
-
-/**
- * 이메일 전송 테스트
- *
- * @param toEmail 테스트 수신자 이메일
- */
-export async function sendTestEmail(toEmail: string): Promise<void> {
-  console.log(`\n[EMAIL TEST] 테스트 이메일 전송 대상: ${toEmail}`);
-  console.log(`[EMAIL TEST] SMTP 설정 상태: ${isEmailConfigured() ? '완료' : '미완료 (콘솔 출력 모드)'}\n`);
-
-  if (!isEmailConfigured()) {
-    console.warn('⚠️  SMTP 설정이 완료되지 않았습니다. .env 파일에 다음 항목을 추가하세요:');
-    console.warn('   SMTP_HOST=smtp.gmail.com');
-    console.warn('   SMTP_PORT=587');
-    console.warn('   SMTP_USER=your-email@gmail.com');
-    console.warn('   SMTP_PASSWORD=your-app-password');
-    console.warn('   SMTP_FROM_EMAIL=noreply@yourdomain.com');
-    console.warn('   SMTP_FROM_NAME=Proxmox Horizon\n');
+export async function sendNotificationEmail(
+  config: EmailConfig & { to: string[] },
+  subject: string,
+  body: string
+): Promise<void> {
+  if (!isEmailConfigured(config)) {
+    console.log(`[EMAIL] 알림 전송 (콘솔): ${subject}\n${body}`);
+    return;
   }
+
+  const transporter = createTransporter(config);
+  await transporter.sendMail({
+    from: `"${config.fromName || 'Proxmox Horizon'}" <${config.fromEmail || config.smtpUser}>`,
+    to: config.to.join(", "),
+    subject,
+    text: body,
+  });
+}
+
+/**
+ * 테스트 이메일 전송
+ */
+export async function sendTestEmail(
+  config: EmailConfig & { to: string[] }
+): Promise<void> {
+  const transporter = createTransporter(config);
+  const { host, port } = resolveSmtp(config);
+  const providerLabel = config.provider && config.provider !== "custom"
+    ? config.provider.toUpperCase()
+    : `${host}:${port}`;
+
+  await transporter.sendMail({
+    from: `"Proxmox Horizon" <${config.fromEmail || config.smtpUser}>`,
+    to: config.to.join(", "),
+    subject: "Proxmox Horizon - 이메일 테스트",
+    text: `이메일 알림 설정이 정상적으로 동작합니다.\n\nProvider: ${providerLabel}\nSMTP: ${host}:${port}`,
+  });
+}
+
+/**
+ * SMTP 설정 완료 여부 확인
+ */
+export function isEmailConfigured(config: EmailConfig): boolean {
+  const provider = config.provider ?? "custom";
+  const hasHost = provider !== "custom" || !!config.smtpHost;
+  return !!(hasHost && config.smtpUser && config.smtpPassword);
 }
