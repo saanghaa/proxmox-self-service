@@ -2836,26 +2836,28 @@ function localeText(raw, fallbackKo, fallbackEn) {
             <div class="section-body">
                 <form id="emailForm">
                     <div class="form-group mb-1">
-                        <label><%= isEnglish ? 'Email Provider' : '이메일 프로바이더' %></label>
-                        <select id="email-provider" style="width:100%;padding:10px 12px;border:2px solid var(--notif-input-border,#e2e8f0);border-radius:8px;font-size:1rem;background:var(--notif-input-bg,#fff);color:inherit;outline:none;cursor:pointer;">
-                            <option value="gmail">Gmail (smtp.gmail.com)</option>
-                            <option value="naver">Naver (smtp.naver.com)</option>
-                            <option value="daum">Daum (smtp.daum.net)</option>
-                            <option value="kakao">Kakao (smtp.kakao.com)</option>
-                            <option value="custom"><%= isEnglish ? 'Custom (direct input)' : '직접 입력' %></option>
-                        </select>
+                        <label><%= isEnglish ? 'SMTP Presets' : 'SMTP 프리셋' %></label>
+                        <input type="hidden" id="email-provider" value="custom">
+                        <div class="btn-row wrap" id="email-smtp-presets">
+                            <button type="button" class="btn btn-secondary btn-sm" data-provider="gmail" data-smtp-host="smtp.gmail.com" data-smtp-port="587">Gmail</button>
+                            <button type="button" class="btn btn-secondary btn-sm" data-provider="naver" data-smtp-host="smtp.naver.com" data-smtp-port="465">Naver</button>
+                            <button type="button" class="btn btn-secondary btn-sm" data-provider="kakao" data-smtp-host="smtp.kakao.com" data-smtp-port="465">Kakao</button>
+                            <button type="button" class="btn btn-secondary btn-sm" data-provider="daum" data-smtp-host="smtp.daum.net" data-smtp-port="465">Daum</button>
+                            <button type="button" class="btn btn-secondary btn-sm" data-provider="custom"><%= isEnglish ? 'Custom' : '직접 입력' %></button>
+                        </div>
+                        <small class="text-note"><%= isEnglish ? 'Click a provider to fill SMTP host and port automatically. For Office365, use Custom with smtp.office365.com / 587.' : '메일 서비스 버튼을 누르면 SMTP 호스트와 포트가 자동 입력됩니다. Office365는 직접 입력에서 smtp.office365.com / 587 을 사용하세요.' %></small>
                     </div>
                     <div class="form-group mb-1" id="email-smtpHost-wrap">
                         <label><%= uuidLabels?.formLabels?.['lbl-016'] || 'SMTP Host' %></label>
-                        <input type="text" id="email-smtpHost" placeholder="<%= uuidLabels?.placeholders?.['ph-010'] || 'smtp.gmail.com' %>">
+                        <input type="text" id="email-smtpHost" placeholder="<%= uuidLabels?.placeholders?.['ph-010'] || 'smtp.example.com' %>">
                     </div>
                     <div class="form-group mb-1" id="email-smtpPort-wrap">
                         <label><%= uuidLabels?.formLabels?.['lbl-017'] || 'SMTP Port' %></label>
-                        <input type="number" id="email-smtpPort" placeholder="<%= uuidLabels?.placeholders?.['ph-011'] || '587' %>">
+                        <input type="number" id="email-smtpPort" placeholder="<%= uuidLabels?.placeholders?.['ph-011'] || '465 or 587' %>">
                     </div>
                     <div class="form-group mb-1">
                         <label><%= uuidLabels?.formLabels?.['lbl-018'] || 'SMTP User' %></label>
-                        <input type="text" id="email-smtpUser" placeholder="<%= uuidLabels?.placeholders?.['ph-012'] || 'your-email@gmail.com' %>">
+                        <input type="text" id="email-smtpUser" placeholder="<%= uuidLabels?.placeholders?.['ph-012'] || 'your-email@example.com' %>">
                     </div>
                     <div class="form-group mb-1">
                         <label><%= uuidLabels?.formLabels?.['lbl-019'] || 'SMTP Password' %></label>
@@ -2863,11 +2865,11 @@ function localeText(raw, fallbackKo, fallbackEn) {
                     </div>
                     <div class="form-group mb-1">
                         <label><%= uuidLabels?.formLabels?.['lbl-020'] || 'From Address' %></label>
-                        <input type="email" id="email-from" placeholder="<%= uuidLabels?.placeholders?.['ph-014'] || 'notifications@company.com' %>">
+                        <input type="email" id="email-from" placeholder="<%= uuidLabels?.placeholders?.['ph-014'] || 'noreply@example.com' %>">
                     </div>
                     <div class="form-group mb-1">
                         <label><%= uuidLabels?.formLabels?.['lbl-021'] || 'To Addresses' %></label>
-                        <input type="text" id="email-to" placeholder="<%= uuidLabels?.placeholders?.['ph-015'] || 'admin1@company.com, admin2@company.com' %>">
+                        <input type="text" id="email-to" placeholder="<%= uuidLabels?.placeholders?.['ph-015'] || 'admin1@example.com, admin2@example.com' %>">
                         <small class="text-note"><%= uuidLabels?.notifications?.['ntf-010'] || 'Separate multiple addresses with commas' %></small>
                     </div>
                     <div class="form-group mb-1">
@@ -5949,6 +5951,14 @@ function getSelectedNotificationEvents(channel) {
         .filter(Boolean);
 }
 
+function setActiveEmailProviderButton(provider) {
+    document.querySelectorAll('#email-smtp-presets [data-provider]').forEach((button) => {
+        const isActive = button.getAttribute('data-provider') === provider;
+        button.classList.toggle('btn-primary', isActive);
+        button.classList.toggle('btn-secondary', !isActive);
+    });
+}
+
 async function sendNotificationTest(channel, config) {
     await api('POST', '/notifications/test', { channel, config });
     showAlert((IS_ENGLISH ? 'Test notification sent: ' : '테스트 알림을 전송했습니다: ') + channel, 'success');
@@ -6179,29 +6189,27 @@ document.getElementById("testEmailBtn").addEventListener("click", async () => {
 
 const SMTP_PRESETS = {
     gmail: { host: 'smtp.gmail.com', port: 587 },
-    naver: { host: 'smtp.naver.com', port: 587 },
+    naver: { host: 'smtp.naver.com', port: 465 },
     daum:  { host: 'smtp.daum.net',  port: 465 },
     kakao: { host: 'smtp.kakao.com', port: 465 },
 };
 
 function updateEmailProviderFields(provider) {
-    const hostWrap = document.getElementById('email-smtpHost-wrap');
-    const portWrap = document.getElementById('email-smtpPort-wrap');
     const hostInput = document.getElementById('email-smtpHost');
     const portInput = document.getElementById('email-smtpPort');
+    const providerInput = document.getElementById('email-provider');
+    providerInput.value = provider || 'custom';
+    setActiveEmailProviderButton(providerInput.value);
     if (provider && provider !== 'custom' && SMTP_PRESETS[provider]) {
         hostInput.value = SMTP_PRESETS[provider].host;
         portInput.value = SMTP_PRESETS[provider].port;
-        hostWrap.style.display = 'none';
-        portWrap.style.display = 'none';
-    } else {
-        hostWrap.style.display = '';
-        portWrap.style.display = '';
     }
 }
 
-document.getElementById('email-provider').addEventListener('change', function() {
-    updateEmailProviderFields(this.value);
+document.querySelectorAll('#email-smtp-presets [data-provider]').forEach((button) => {
+    button.addEventListener('click', function() {
+        updateEmailProviderFields(this.getAttribute('data-provider'));
+    });
 });
 
 document.getElementById("testWebhookBtn").addEventListener("click", async () => {
